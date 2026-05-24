@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学与成设计网 — 重构架构设计方案</title>
+<style>
+  @page { size: A4; margin: 16mm 14mm; }
+  :root {
+    --blue: #2563eb; --blue-bg: #eff6ff;
+    --green: #059669; --green-bg: #ecfdf5;
+    --amber: #d97706; --amber-bg: #fffbeb;
+    --purple: #7c3aed; --purple-bg: #f5f3ff;
+    --red: #dc2626;
+    --text: #1f2937; --gray: #6b7280;
+    --border: #e5e7eb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    color: var(--text); line-height: 1.8;
+    max-width: 960px; margin: 0 auto; padding: 40px 20px; background: #f8fafc;
+  }
+  .cover { text-align: center; padding: 50px 0; page-break-after: always; }
+  .cover h1 { font-size: 30px; letter-spacing: 3px; margin-bottom: 8px; }
+  .cover .sub { font-size: 16px; color: var(--blue); font-weight: 700; }
+  .cover .divider { width: 60px; height: 3px; background: var(--blue); margin: 20px auto; }
+  .cover .meta { color: var(--gray); font-size: 13px; margin-top: 16px; }
+
+  h2 {
+    font-size: 20px; border-bottom: 2px solid var(--border);
+    padding-bottom: 6px; margin: 32px 0 14px; color: #111827;
+  }
+  h3 { font-size: 16px; margin: 22px 0 8px; }
+  h4 { font-size: 14px; margin: 14px 0 6px; }
+
+  p, li { font-size: 14px; }
+  ul, ol { padding-left: 20px; margin: 6px 0; }
+  li { margin: 3px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 13px; }
+  th { background: #f3f4f6; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid var(--border); }
+  td { padding: 8px 10px; border: 1px solid var(--border); vertical-align: top; }
+
+  .card {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px; margin: 10px 0;
+  }
+  .card.blue { border-left: 3px solid var(--blue); }
+  .card.green { border-left: 3px solid var(--green); }
+  .card.amber { border-left: 3px solid var(--amber); }
+  .card.purple { border-left: 3px solid var(--purple); }
+
+  .tag {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 700; margin-right: 4px;
+  }
+  .tag-blue { background: var(--blue-bg); color: var(--blue); }
+  .tag-green { background: var(--green-bg); color: var(--green); }
+  .tag-amber { background: var(--amber-bg); color: var(--amber); }
+
+  .architecture-diagram {
+    background: #1e293b; color: #e2e8f0; padding: 16px 20px; border-radius: 8px;
+    font-family: 'SF Mono', 'Consolas', monospace; font-size: 12px; line-height: 1.9;
+    margin: 12px 0 18px; overflow-x: auto; white-space: pre;
+  }
+
+  pre {
+    background: #1e293b; color: #e2e8f0; padding: 12px 16px; border-radius: 8px;
+    overflow-x: auto; font-size: 13px; line-height: 1.7; margin: 8px 0 14px;
+  }
+  pre code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; }
+
+  .flow-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 8px 0; }
+  .flow-step {
+    flex: 1; min-width: 100px; background: var(--blue-bg);
+    border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px;
+    text-align: center; font-size: 13px; font-weight: 600; color: var(--blue);
+  }
+  .flow-arrow { display: flex; align-items: center; font-size: 18px; color: var(--gray); }
+
+  .phase-badge {
+    display: inline-block; padding: 3px 14px; border-radius: 14px;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+  .phase-1 { background: #059669; }
+  .phase-2 { background: #2563eb; }
+  .phase-3 { background: #7c3aed; }
+  .phase-4 { background: #d97706; }
+
+  .footer { margin-top: 40px; padding: 16px 0; border-top: 1px solid var(--border); color: var(--gray); font-size: 12px; text-align: center; }
+
+  @media print {
+    body { background: #fff; padding: 0; max-width: 100%; }
+    .card { break-inside: avoid; }
+    pre, .architecture-diagram { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>学与成设计网</h1>
+  <div class="sub">Next.js 全栈重构 · 架构设计方案</div>
+  <div class="divider"></div>
+  <div class="meta">
+    <p>技术栈：Next.js 16 + TypeScript + Prisma + PostgreSQL + Tailwind CSS 4</p>
+    <p>文档版本：v1.0 · 2026-05-18</p>
+  </div>
+</div>
+
+<!-- ============= 1 ============= -->
+<h2>一、项目核心目标</h2>
+
+<div class="card blue">
+  <p><strong>一句话定义：</strong>把旧站 (PHP LzCMS) 的 SKP 模型 / 教程 / 材质 / 软件下载四种核心资产，重构为可规模化运营的 Next.js 全栈内容平台。</p>
+</div>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin:12px 0;">
+  <div class="card green" style="flex:1;min-width:200px;">
+    <h4 style="margin-top:0;">🎯 业务目标</h4>
+    <ul>
+      <li>日均 5000+ 访客的内容消费体验</li>
+      <li>后台单人每天录入 20+ 条资源</li>
+      <li>支持会员 / VIP 分层下载权限</li>
+      <li>SEO 可索引所有资源页</li>
+    </ul>
+  </div>
+  <div class="card purple" style="flex:1;min-width:200px;">
+    <h4 style="margin-top:0;">🏗️ 技术目标</h4>
+    <ul>
+      <li>SQL 注入 / XSS / CSRF 全量防御</li>
+      <li>图片 OSS 化，服务器零存储压力</li>
+      <li>API 响应 &lt; 200ms（SSG + ISR）</li>
+      <li>批量上传 1 分钟完成 1 条资源</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============= 2 ============= -->
+<h2>二、信息架构</h2>
+
+<h3>2.1 前台地图</h3>
+<pre><code>首页 (/)
+├── 搜索 (/search?q=xxx)
+├── 模型 (/models)
+│   ├── 建筑SU模型 (/models/architecture)
+│   ├── 工装SU模型 (/models/commercial)
+│   ├── 家装SU模型 (/models/residential)
+│   ├── 园林SU模型 (/models/landscape)
+│   └── D5模型 (/models/d5)
+├── 教程 (/courses)
+│   ├── D5专题 (/courses/d5)
+│   ├── SketchUp (/courses/sketchup)
+│   ├── Layout (/courses/layout)
+│   └── Enscape (/courses/enscape)
+├── 材质 (/materials)
+│   ├── PBR贴图 (/materials/pbr)
+│   └── HDR贴图 (/materials/hdr)
+├── 软件 (/software)
+│   ├── SketchUp (/software/sketchup)
+│   └── Enscape (/software/enscape)
+├── 资源详情 (/resource/[slug])
+├── 会员中心 (/member)
+│   ├── 我的收藏 (/member/favorites)
+│   ├── 下载记录 (/member/downloads)
+│   └── 浏览历史 (/member/history)
+└── 登录 (/login)</code></pre>
+
+<h3>2.2 后台地图</h3>
+<pre><code>管理后台 (/admin)
+├── 工作台 (/admin)                    — 概览统计 + 快捷入口
+├── 内容管理
+│   ├── 资源列表 (/admin/resources)     — 全部 ContentItem 列表
+│   ├── 新增资源 (/admin/resources/new) — 单个 / 批量录入
+│   └── 编辑资源 (/admin/resources/[id])
+├── 分类管理 (/admin/categories)        — 树形分类 CRUD
+├── 标签管理 (/admin/tags)
+├── 文件管理 (/admin/files)             — ResourceFile 维护
+├── 用户管理 (/admin/users)
+├── 会员管理 (/admin/members)           — 会员权益配置
+└── 系统设置 (/admin/settings)</code></pre>
+
+<!-- ============= 3 ============= -->
+<h2>三、数据库设计（扩展现有 Prisma Schema）</h2>
+
+<h3>3.1 现有模型评价</h3>
+<div class="card green">
+  <p>当前 Prisma schema 已有 <strong>User、Category、Tag、ContentItem、ResourceFile</strong> 五个核心模型，结构合理，覆盖了 80% 需求。以下仅标记需新增/调整的字段和表。</p>
+</div>
+
+<h3>3.2 需新增的模型</h3>
+<pre><code>model User {
+  // 新增字段
+  phone       String?           // 手机号（可选绑定）
+  membership  MembershipLevel   @default(FREE)
+  points      Int               @default(0)    // 积分
+  signInAt    DateTime?                        // 最后签到时间
+  bannedAt    DateTime?                        // 封禁时间
+  favorites   Favorite[]                       // 收藏
+  downloads   DownloadLog[]                    // 下载记录
+  history     BrowseHistory[]                  // 浏览历史
+}
+
+model Favorite {
+  id            String      @id @default(cuid())
+  userId        String
+  contentItemId String
+  createdAt     DateTime    @default(now())
+  user          User        @relation(fields: [userId], references: [id])
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id])
+  @@unique([userId, contentItemId])
+}
+
+model DownloadLog {
+  id            String      @id @default(cuid())
+  userId        String
+  contentItemId String
+  fileId        String?
+  downloadedAt  DateTime    @default(now())
+  user          User        @relation(fields: [userId], references: [id])
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id])
+}
+
+model BrowseHistory {
+  id            String      @id @default(cuid())
+  userId        String
+  contentItemId String
+  viewedAt      DateTime    @default(now())
+  user          User        @relation(fields: [userId], references: [id])
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String          // CREATE / UPDATE / DELETE / LOGIN
+  targetType String?         // ContentItem / User / Category
+  targetId   String?
+  detail     String?
+  createdAt  DateTime @default(now())
+}
+
+enum MembershipLevel {
+  FREE
+  MEMBER
+  VIP
+}</code></pre>
+
+<h3>3.3 ContentItem 需补充字段</h3>
+<pre><code>model ContentItem {
+  // 新增
+  requiredPoints  Int          @default(0)     // 所需积分
+  sortOrder       Int          @default(0)     // 排序
+  isSticky        Boolean      @default(false) // 置顶
+  isRecommended   Boolean      @default(false) // 推荐
+  coverImage      String?                       // 封面图 → 拆到 Media 模型更佳
+  images          Media[]                       // 内容图片（1:N）
+}
+
+model Media {
+  id            String      @id @default(cuid())
+  contentItemId String
+  url           String                        // OSS / 本地路径
+  type          MediaType                     // COVER / CONTENT / THUMBNAIL
+  sortOrder     Int         @default(0)
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id])
+}
+
+enum MediaType {
+  COVER
+  CONTENT
+  THUMBNAIL
+}</code></pre>
+
+<!-- ============= 4 ============= -->
+<h2>四、路由与页面设计</h2>
+
+<h3>4.1 页面分三类策略</h3>
+<table>
+  <tr><th>策略</th><th>适用页面</th><th>原因</th></tr>
+  <tr>
+    <td><span class="tag tag-green">SSG</span></td>
+    <td>首页、分类列表、资源详情</td>
+    <td>内容变化频率低（一天几次），静态生成速度最快</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-blue">ISR</span></td>
+    <td>搜索结果、热门排行</td>
+    <td>每小时 / 每天自动更新一次即可</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-amber">SSR</span></td>
+    <td>会员中心、收藏/下载记录</td>
+    <td>依赖登录态，必须服务端实时渲染</td>
+  </tr>
+</table>
+
+<h3>4.2 文件目录结构</h3>
+<pre><code>src/app/
+├── layout.tsx                     # 根布局（Geist 字体、元数据）
+├── page.tsx                       # 首页（SSG）
+├── loading.tsx / error.tsx        # 全局加载/错误
+├── not-found.tsx                  # 404
+├── login/
+│   └── page.tsx                   # 登录页（SSR）
+├── search/
+│   └── page.tsx                   # 搜索结果（ISR: 1h）
+├── models/
+│   ├── page.tsx                   # 模型总览
+│   └── [category]/
+│       └── page.tsx               # 分类列表 (SSG + generateStaticParams)
+├── courses/
+│   └── [category]/page.tsx
+├── materials/
+│   └── [category]/page.tsx
+├── software/
+│   └── [category]/page.tsx
+├── resource/
+│   └── [slug]/
+│       └── page.tsx               # 资源详情 (SSG + 增量再验证)
+├── member/
+│   ├── page.tsx                   # 会员中心（SSR）
+│   ├── favorites/page.tsx
+│   ├── downloads/page.tsx
+│   └── history/page.tsx
+├── admin/
+│   ├── layout.tsx                 # 后台布局（侧栏 + 鉴权）
+│   ├── page.tsx                   # 工作台
+│   ├── resources/
+│   │   ├── page.tsx               # 列表
+│   │   ├── new/
+│   │   │   └── page.tsx           # 新增（单条 / 批量）
+│   │   └── [id]/
+│   │       └── page.tsx           # 编辑
+│   ├── categories/page.tsx
+│   ├── tags/page.tsx
+│   ├── users/page.tsx
+│   └── settings/page.tsx
+└── api/
+    ├── auth/
+    │   ├── login/route.ts
+    │   ├── register/route.ts
+    │   └── logout/route.ts
+    ├── resources/
+    │   ├── route.ts               # GET 列表 / POST 新增
+    │   └── [id]/route.ts          # PATCH 编辑 / DELETE 删除
+    ├── media/
+    │   └── upload/route.ts        # 封面/内容图上传
+    ├── favorites/route.ts         # 收藏 toggle
+    ├── search/route.ts            # 全文搜索
+    └── batch/
+        └── route.ts               # 批量导入接口</code></pre>
+
+<!-- ============= 5 ============= -->
+<h2>五、组件架构</h2>
+
+<h3>5.1 层级划分</h3>
+<pre><code>src/components/
+├── ui/                             # 原子 UI 组件（设计系统）
+│   ├── button.tsx
+│   ├── input.tsx
+│   ├── select.tsx
+│   ├── badge.tsx
+│   ├── card.tsx
+│   ├── dialog.tsx                # 弹窗
+│   ├── dropdown.tsx
+│   ├── table.tsx
+│   └── toast.tsx
+├── shared/                         # 业务通用组件
+│   ├── resource-card.tsx          # 资源卡片（已有，需改造）
+│   ├── category-tree.tsx          # 分类树
+│   ├── media-uploader.tsx         # 图片上传
+│   ├── search-bar.tsx             # 搜索框
+│   ├── pagination.tsx
+│   └── empty-state.tsx
+├── layout/                         # 布局组件
+│   ├── site-header.tsx            # 前台头部（已有）
+│   ├── site-footer.tsx            # 前台底部（已有）
+│   ├── admin-sidebar.tsx          # 后台侧栏
+│   └── admin-header.tsx           # 后台顶栏
+├── home/                           # 首页专用
+│   ├── hero-section.tsx           # 已有
+│   ├── quick-stats.tsx            # 已有
+│   ├── topic-strip.tsx            # 已有
+│   ├── resource-section.tsx       # 已有
+│   └── member-section.tsx         # 已有
+├── resource/                       # 资源详情页专用
+│   ├── resource-detail.tsx        # 详情主体
+│   ├── resource-sidebar.tsx       # 相关推荐
+│   └── download-panel.tsx         # 下载面板
+└── admin/                          # 后台专用
+    ├── resource-form.tsx          # 资源录入表单（核心）
+    ├── resource-table.tsx         # 资源列表表格
+    ├── batch-upload.tsx           # 批量上传面板
+    ├── category-manager.tsx       # 分类管理
+    └── stats-dashboard.tsx        # 统计仪表盘</code></pre>
+
+<h3>5.2 批量上传表单设计（核心组件）</h3>
+<div class="card blue">
+  <h4 style="margin-top:0;">resource-form.tsx 设计思路</h4>
+  <p>根据参考文档，后台录入一条资源的字段固定。表单组件应支持两种模式：</p>
+  <ol>
+    <li><strong>单条模式</strong>：常规表单，逐个字段填写</li>
+    <li><strong>批量模式</strong>：上传一个 TXT（含标题+链接+密码）+ 选择图片文件夹 → 自动解析并逐条提交</li>
+  </ol>
+  <p>字段对照：</p>
+  <table>
+    <tr><th>文档字段</th><th>Prisma 字段</th><th>组件</th></tr>
+    <tr><td>标题</td><td>ContentItem.title</td><td>&lt;Input&gt;</td></tr>
+    <tr><td>封面图</td><td>Media(type=COVER)</td><td>&lt;MediaUploader&gt;</td></tr>
+    <tr><td>下载地址</td><td>ResourceFile.fileUrl</td><td>&lt;Input&gt;</td></tr>
+    <tr><td>下载密码</td><td>ResourceFile.password</td><td>&lt;Input&gt;</td></tr>
+    <tr><td>所需积分</td><td>ContentItem.requiredPoints</td><td>&lt;Input type="number"&gt;</td></tr>
+    <tr><td>首页分类</td><td>Category.id</td><td>&lt;Select&gt;</td></tr>
+    <tr><td>内容图片</td><td>Media(type=CONTENT)</td><td>&lt;MediaUploader multiple&gt;</td></tr>
+    <tr><td>排序</td><td>ContentItem.sortOrder</td><td>&lt;Input type="number"&gt;</td></tr>
+  </table>
+</div>
+
+<!-- ============= 6 ============= -->
+<h2>六、认证与权限模型</h2>
+
+<h3>6.1 三端用户体系</h3>
+<table>
+  <tr><th>角色</th><th>权限</th><th>登录方式</th></tr>
+  <tr>
+    <td><strong>访客（未登录）</strong></td>
+    <td>浏览公开资源、搜索</td>
+    <td>无需登录</td>
+  </tr>
+  <tr>
+    <td><strong>会员（MEMBER）</strong></td>
+    <td>下载公开+会员资源、收藏、查看历史</td>
+    <td>邮箱+密码 / 微信扫码</td>
+  </tr>
+  <tr>
+    <td><strong>VIP</strong></td>
+    <td>全部资源可下载、无需积分</td>
+    <td>继承会员登录</td>
+  </tr>
+  <tr>
+    <td><strong>编辑（EDITOR）</strong></td>
+    <td>新增/编辑内容、上传文件</td>
+    <td>邮箱+密码+OTP</td>
+  </tr>
+  <tr>
+    <td><strong>管理员（ADMIN）</strong></td>
+    <td>全权限：用户管理、系统设置、删除</td>
+    <td>邮箱+密码+OTP</td>
+  </tr>
+</table>
+
+<h3>6.2 鉴权中间件</h3>
+<pre><code>// src/middleware.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // 后台路由保护
+  if (pathname.startsWith('/admin')) {
+    const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+    if (!token || (token.role !== 'ADMIN' && token.role !== 'EDITOR')) {
+      // 不暴露后台是否存在 → 统一 404 而非 302
+      return NextResponse.rewrite(new URL('/404', req.url));
+    }
+  }
+
+  // 会员路由保护
+  if (pathname.startsWith('/member')) {
+    const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+    if (!token) {
+      return NextResponse.redirect(new URL('/login?redirect=' + pathname, req.url));
+    }
+  }
+
+  // 安全头（全站）
+  const response = NextResponse.next();
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set(
+    'Content-Security-Policy',
+    "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'"
+  );
+  return response;
+}
+
+export const config = {
+  matcher: ['/admin/:path*', '/member/:path*', '/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};</code></pre>
+
+<!-- ============= 7 ============= -->
+<h2>七、数据流设计</h2>
+
+<h3>7.1 前台浏览流程</h3>
+<div class="flow-row">
+  <div class="flow-step">用户访问首页</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">SSG 静态页面<br>直接返回 HTML</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">点击资源卡</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">/resource/[slug]<br>SSG 详情页</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">点击下载<br>判断权限</div>
+</div>
+
+<h3>7.2 下载鉴权流程</h3>
+<pre><code>用户点击「下载」
+  ↓
+GET /api/resources/[id]/download
+  ↓ Session 校验
+  ├─ 未登录 → 返回 401，前端弹登录框
+  ├─ role=FREE, visibility=MEMBER/VIP → 返回 403，"会员专享"
+  ├─ role=MEMBER, visibility=VIP → 返回 403，"VIP专享"
+  └─ 权限通过 → 记录 DownloadLog（去重）→ 返回 ResourceFile.fileUrl + password
+    → 前端展示网盘链接和提取码（复制按钮）</code></pre>
+
+<h3>7.3 后台批量上传流程（替换手动截图模式）</h3>
+<div class="card amber">
+  <h4 style="margin-top:0;">旧流程 vs 新流程</h4>
+  <table>
+    <tr><th>步骤</th><th>旧方式</th><th>新方式</th></tr>
+    <tr><td>1. 进入后台</td><td>打开 /admin/index/index.html</td><td>打开 /admin/resources/new → 选批量模式</td></tr>
+    <tr><td>2. 上传链接文件</td><td>手动解析 txt</td><td>拖拽或选择 baidu.txt → 自动解析标题+链接+密码</td></tr>
+    <tr><td>3. 上传封面</td><td>Windows 文件选择框</td><td>拖拽或选择 封面-N.jpg → 组件内预览 + 进度条</td></tr>
+    <tr><td>4. 上传内容图</td><td>富文本编辑器图片按钮</td><td>拖拽或选择 N.jpg → 自动关联</td></tr>
+    <tr><td>5. 填积分/分类/排序</td><td>手动输入</td><td>批量模式：默认 0 / SU模型 / 自动递增</td></tr>
+    <tr><td>6. 提交</td><td>点击"立即提交"</td><td>点击"提交" → API → 成功 toast → 自动载入下一条</td></tr>
+  </table>
+</div>
+
+<pre><code>// API: POST /api/batch  批量导入
+// 请求体：
+{
+  "items": [{
+    "title": "SU-21 现代图书馆室内设计",
+    "coverFile": "封面-21.jpg",       // 前端已上传后返回的 key
+    "contentFile": "21.jpg",
+    "downloadUrl": "https://pan.baidu.com/s/xxxx",
+    "downloadPassword": "abcd",
+    "requiredPoints": 0,
+    "categorySlug": "su-models",
+    "sortOrder": 78
+  }]
+}
+
+// 响应：
+{
+  "success": true,
+  "created": 1,
+  "failed": 0,
+  "nextSortOrder": 79
+}</code></pre>
+
+<!-- ============= 8 ============= -->
+<h2>八、图片 / 文件存储方案</h2>
+
+<div class="card green">
+  <h4 style="margin-top:0;">推荐：阿里云 OSS / Cloudflare R2</h4>
+  <p>封面图和内容图不再存服务器本地 <code>/uploads/</code>，而是：</p>
+  <ol>
+    <li><strong>前端直传 OSS</strong>：用 STS 临时凭证，图片从浏览器直接上传到 OSS，不经过 Next.js 服务器</li>
+    <li><strong>回调写入数据库</strong>：OSS 上传成功回调 → API 写入 Media 表</li>
+    <li><strong>CDN 加速</strong>：图片 URL 走 CDN，支持缩略图参数（?x-oss-process=image/resize,w_320）</li>
+    <li><strong>私有资源保护</strong>：会员/付费资源打上 OSS 私有标记，通过 API 签名 URL 鉴权访问</li>
+  </ol>
+</div>
+
+<pre><code>// Media Uploader 组件流程
+1. 用户选择文件 → 前端校验格式/大小（< 10MB，jpg/png/webp）
+2. fetch POST /api/media/upload-token → 获取 OSS STS 临时凭证
+3. 前端用 STS 直传 OSS → 进度条
+4. 上传完成 → fetch POST /api/media/confirm { key, contentItemId, type }
+5. 服务端写入 Media 表 → 返回 mediaId + CDN URL</code></pre>
+
+<!-- ============= 9 ============= -->
+<h2>九、SEO 策略</h2>
+
+<div class="card blue">
+  <ul>
+    <li><strong>所有资源页面 SSG</strong>：<code>generateStaticParams</code> 预渲染全部内容</li>
+    <li><strong>动态 sitemap.xml</strong>：<code>/sitemap.xml</code> 路由自动生成</li>
+    <li><strong>结构化数据</strong>：资源详情页注入 JSON-LD（Article / SoftwareApplication）</li>
+    <li><strong>Meta 管理</strong>：每篇 ContentItem 用 seoTitle + seoDescription + coverImage 生成 og:image</li>
+    <li><strong>分类页 canonical</strong>：防止重复内容被搜索引擎惩罚</li>
+  </ul>
+</div>
+
+<!-- ============= 10 ============= -->
+<h2>十、实施路线图</h2>
+
+<table>
+  <tr><th style="width:60px">阶段</th><th>目标</th><th>关键交付</th><th>预估工时</th></tr>
+  <tr>
+    <td><span class="phase-badge phase-1">P1</span></td>
+    <td><strong>基础搭建</strong><br>首页 + 列表页 + 详情页可运行</td>
+    <td>
+      • Prisma 完整 Schema + 种子数据 10 条<br>
+      • 首页从数据库渲染（替代 site-data.ts）<br>
+      • 分类列表页 SSG<br>
+      • 资源详情页 /resource/[slug]<br>
+      • 搜索接口 /api/search
+    </td>
+    <td>2 周</td>
+  </tr>
+  <tr>
+    <td><span class="phase-badge phase-2">P2</span></td>
+    <td><strong>认证 + 会员系统</strong></td>
+    <td>
+      • next-auth 集成（邮箱密码 + OTP）<br>
+      • middleware 鉴权路由守卫<br>
+      • 会员中心：收藏/下载记录/历史<br>
+      • 下载鉴权接口<br>
+      • 积分 + 签到
+    </td>
+    <td>2 周</td>
+  </tr>
+  <tr>
+    <td><span class="phase-badge phase-3">P3</span></td>
+    <td><strong>后台管理系统</strong></td>
+    <td>
+      • Admin 布局 + 侧栏导航<br>
+      • 资源 CRUD（单条 + 批量）<br>
+      • 图片上传（OSS 直传）<br>
+      • 分类树管理<br>
+      • 用户/会员管理
+    </td>
+    <td>3 周</td>
+  </tr>
+  <tr>
+    <td><span class="phase-badge phase-4">P4</span></td>
+    <td><strong>迁移 + 优化</strong></td>
+    <td>
+      • 旧站数据迁移脚本<br>
+      • 批量导入 TXT 解析工具<br>
+      • 性能优化（ISR 缓存）<br>
+      • 安全审计 + 渗透测试<br>
+      • 旧站域名切换
+    </td>
+    <td>2 周</td>
+  </tr>
+</table>
+
+<!-- ============= 11 ============= -->
+<h2>十一、技术决策记录</h2>
+
+<table>
+  <tr><th>决策</th><th>选择</th><th>理由</th></tr>
+  <tr>
+    <td>富文本编辑器</td>
+    <td>TipTap（不依赖内容的场景用 Markdown）</td>
+    <td>用户实际并不需要复杂富文本——标题+图片+下载链接即可。简单场景用 textarea + Markdown；如需富文本，TipTap 比 Quill/Plate 更可控。</td>
+  </tr>
+  <tr>
+    <td>图片存储</td>
+    <td>阿里云 OSS</td>
+    <td>国内访问速度快，STS 直传免服务器中转，成本低</td>
+  </tr>
+  <tr>
+    <td>文件上传组件</td>
+    <td>自研 MediaUploader</td>
+    <td>需求简单（拖拽+进度条+缩略图），不引入额外依赖</td>
+  </tr>
+  <tr>
+    <td>认证库</td>
+    <td>next-auth (Auth.js)</td>
+    <td>原生支持 Next.js，内置 CSRF + Session 安全，可接微信/QQ 登录</td>
+  </tr>
+  <tr>
+    <td>速率限制</td>
+    <td>Upstash Redis Ratelimit</td>
+    <td>Serverless 友好，无需运维 Redis</td>
+  </tr>
+  <tr>
+    <td>部署</td>
+    <td>Vercel / 阿里云 ECS + Docker</td>
+    <td>小流量 Vercel 免费够用；大流量切 ECS</td>
+  </tr>
+  <tr>
+    <td>是否需要 CMS</td>
+    <td>自研后台优先，后续可选 Payload</td>
+    <td>现有需求用自研表单即可覆盖；Payload 适合扩展到更复杂的 CMS 场景时引入</td>
+  </tr>
+</table>
+
+<!-- ============= 12 ============= -->
+<h2>十二、前端数据流：何时用 Server Component vs Client Component</h2>
+<table>
+  <tr><th>场景</th><th>策略</th><th>原因</th></tr>
+  <tr><td>首页资源列表</td><td>Server Component + 直接 Prisma 查询</td><td>无需交互，服务端直接查库渲染</td></tr>
+  <tr><td>搜索框输入</td><td>Client Component + debounce + fetch</td><td>需要实时响应输入</td></tr>
+  <tr><td>收藏按钮</td><td>Client Component + Server Action</td><td>需要乐观更新 UI</td></tr>
+  <tr><td>后台表单提交</td><td>Client Component + fetch POST</td><td>需要表单状态管理</td></tr>
+  <tr><td>下载链接获取</td><td>Server Action</td><td>网盘密码不应暴露在前端 JS bundle</td></tr>
+</table>
+
+<!-- ============= 13 ============= -->
+<h2>十三、项目启动 CMD</h2>
+<pre><code># 1. 数据库初始化和种子数据
+npx prisma db push
+npx prisma db seed
+
+# 2. 启动开发服务器
+npm run dev
+
+# 3. 首次需要生成 Prisma Client
+npx prisma generate
+
+# 4. 如果要生成 slug（旧站迁移后）
+npm run migrate:slugs
+
+# 5. 构建 SSG 页面
+npm run build</code></pre>
+
+<div class="footer">
+  <p>架构设计方案 v1.0 · 2026-05-18 · 仅供 xuedda.com 技术团队内部参考</p>
+</div>
+
+</body>
+</html>

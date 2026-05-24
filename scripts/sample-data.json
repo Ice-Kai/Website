@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1782,
+    "title": "SU-20 蓝染特色文化艺术实践室",
+    "summary": "教育空间模型，包含完整室内场景与蓝染主题陈设。",
+    "cover_image": "https://www.xuedda.com/uploads/images/20260517/824c77a76b527f6829aa033bf24f2e91.jpg",
+    "category_name": "教育",
+    "parent_category": "工装SU模型",
+    "content_type": "MODEL",
+    "view_count": 9,
+    "download_count": 5,
+    "publish_time": "2026-05-17",
+    "files": [
+      { "url": "https://pan.baidu.com/s/1abc123def456", "password": "xdd1", "file_size": "378 MB", "file_type": "SKP" }
+    ]
+  },
+  {
+    "id": 1781,
+    "title": "SU-19 绿植沉浸式儿童创意工坊",
+    "summary": "儿童美育空间模型，可用于工装教育场景方案表达。",
+    "cover_image": "https://www.xuedda.com/uploads/images/20260517/1a74dce1de49bef32ef3cf4c554e105a.jpg",
+    "category_name": "教育",
+    "parent_category": "工装SU模型",
+    "content_type": "MODEL",
+    "view_count": 4,
+    "download_count": 2,
+    "publish_time": "2026-05-17",
+    "files": [
+      { "url": "https://pan.baidu.com/s/1xyz789ghi012", "password": "xdd2", "file_size": "280 MB", "file_type": "SKP" }
+    ]
+  },
+  {
+    "id": 1520,
+    "title": "D5教程——2 工作流",
+    "summary": "围绕真实项目表现整理 D5 渲染工作流。",
+    "cover_image": "https://www.xuedda.com/uploads/images/20230629/c057efdde30e7d5df87ba35a703a3bbf.jpg",
+    "category_name": "薛大大D5教程",
+    "parent_category": null,
+    "content_type": "COURSE",
+    "view_count": 533,
+    "download_count": 120,
+    "publish_time": "2023-06-29",
+    "files": []
+  },
+  {
+    "id": 1450,
+    "title": "SU2026版本",
+    "summary": "SketchUp新版安装包入口。",
+    "cover_image": "https://www.xuedda.com/uploads/images/20230524/a81b815356521566ec00dcb69a3622ea.jpg",
+    "category_name": "软件",
+    "parent_category": null,
+    "content_type": "SOFTWARE",
+    "view_count": 560,
+    "download_count": 320,
+    "publish_time": "2025-10-17",
+    "files": [
+      { "url": "https://pan.baidu.com/s/1su2026install", "password": "su26", "file_size": "2.1 GB", "file_type": "EXE" }
+    ]
+  },
+  {
+    "id": 1400,
+    "title": "10组墙面PBR贴图素材",
+    "summary": "4K高清墙面贴图，适合室内与建筑表现快速调用。",
+    "cover_image": "https://www.xuedda.com/uploads/images/20230926/df7e31eac2557c30075c63407942a7fa.jpg",
+    "category_name": "PBR贴图",
+    "parent_category": null,
+    "content_type": "MATERIAL",
+    "view_count": 1176,
+    "download_count": 580,
+    "publish_time": "2023-09-26",
+    "files": [
+      { "url": "https://pan.baidu.com/s/1pbr10wall", "password": "pbr1", "file_size": "360 MB", "file_type": "ZIP" }
+    ]
+  }
+]

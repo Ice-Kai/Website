@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学与成设计网 - 新版首页预览</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    background: #f8fafc; color: #0f172a; line-height: 1.6;
+    overflow-x: hidden;
+  }
+  :root {
+    --cyan: #0891b2;
+    --cyan-light: #06b6d4;
+    --amber: #d97706;
+    --violet: #7c3aed;
+    --rose: #e11d48;
+    --emerald: #059669;
+  }
+
+  /* ---- HEADER ---- */
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(226,232,240,0.6);
+  }
+  .header-inner {
+    max-width: 1440px; margin: 0 auto; padding: 0 24px;
+    height: 72px; display: flex; align-items: center; gap: 32px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+  .logo-icon {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: grid; place-items: center;
+    color: #fff; font-size: 20px; font-weight: 900;
+    box-shadow: 0 4px 12px rgba(15,23,42,0.15);
+    transition: transform 0.3s;
+  }
+  .logo:hover .logo-icon { transform: scale(1.08); }
+  .logo-text .brand { font-size: 20px; font-weight: 900; color: #0f172a; line-height: 1.2; }
+  .logo-text .sub { font-size: 11px; font-weight: 600; color: #94a3b8; letter-spacing: 0.5px; }
+
+  .nav { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+  .nav a {
+    text-decoration: none; padding: 8px 16px; border-radius: 50px;
+    font-size: 14px; font-weight: 700; color: #475569;
+    transition: all 0.2s; position: relative;
+  }
+  .nav a:hover { background: #f1f5f9; color: var(--cyan); }
+  .nav .nav-active { background: #ecfeff; color: var(--cyan); }
+
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    width: 320px; height: 44px; border-radius: 50px;
+    border: 1.5px solid #e2e8f0; background: #f8fafc;
+    padding: 0 16px; transition: all 0.3s;
+  }
+  .search-box:focus-within { border-color: var(--cyan); background: #fff; box-shadow: 0 0 0 4px rgba(6,182,212,0.08); }
+  .search-box input { border: none; outline: none; background: transparent; flex: 1; font-size: 14px; font-weight: 500; color: #0f172a; }
+  .search-box input::placeholder { color: #94a3b8; }
+  .search-box svg { color: #94a3b8; flex-shrink: 0; }
+
+  .user-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .btn-login {
+    padding: 8px 20px; border-radius: 50px; background: linear-gradient(135deg, #0891b2, #06b6d4);
+    color: #fff; font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+    transition: all 0.3s; box-shadow: 0 2px 8px rgba(8,145,178,0.3);
+    text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-login:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(8,145,178,0.4); }
+
+  /* ---- HERO ---- */
+  .hero { padding: 20px 0 60px; }
+  .hero-inner {
+    max-width: 1440px; margin: 0 auto; padding: 0 24px;
+    display: grid; grid-template-columns: 1.3fr 420px; gap: 20px;
+    align-items: stretch;
+  }
+  .hero-main {
+    position: relative; border-radius: 28px; overflow: hidden;
+    min-height: 520px; background: #0f172a;
+    grid-row: span 2;
+  }
+  .hero-main img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.8s;
+  }
+  .hero-main:hover img { transform: scale(1.06); }
+  .hero-main .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.4) 50%, rgba(15,23,42,0.05) 100%);
+  }
+  .hero-main .content {
+    position: absolute; left: 0; bottom: 0; right: 0; padding: 48px 56px;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 16px; border-radius: 50px;
+    background: rgba(6,182,212,0.25); backdrop-filter: blur(12px);
+    font-size: 12px; font-weight: 800; color: #cffafe;
+    border: 1px solid rgba(103,232,249,0.3);
+    margin-bottom: 20px;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #22d3ee; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .hero-main h1 {
+    font-size: 48px; font-weight: 900; color: #fff; line-height: 1.15;
+    letter-spacing: -1px; max-width: 600px;
+  }
+  .hero-main p {
+    margin-top: 16px; font-size: 17px; color: #cbd5e1; font-weight: 500;
+    max-width: 500px; line-height: 1.7;
+  }
+  .hero-main .hero-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 28px; padding: 12px 28px; border-radius: 50px;
+    background: #fff; color: #0f172a; font-size: 15px; font-weight: 700;
+    text-decoration: none; transition: all 0.3s;
+  }
+  .hero-main .hero-btn:hover { background: #ecfeff; padding-left: 32px; padding-right: 24px; }
+
+  .hero-side {
+    border-radius: 24px; overflow: hidden; position: relative;
+    background: #1e293b; min-height: 250px;
+  }
+  .hero-side img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s;
+  }
+  .hero-side:hover img { transform: scale(1.05); }
+  .hero-side .side-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.3) 50%, transparent 100%);
+  }
+  .hero-side .side-content { position: absolute; left: 0; bottom: 0; right: 0; padding: 24px 28px; }
+  .hero-side .side-tag {
+    display: inline-block; padding: 3px 12px; border-radius: 50px;
+    background: rgba(255,255,255,0.18); backdrop-filter: blur(8px);
+    font-size: 11px; font-weight: 800; color: #e2e8f0;
+    margin-bottom: 10px;
+  }
+  .hero-side h2 { font-size: 22px; font-weight: 900; color: #fff; line-height: 1.3; }
+
+  /* ---- QUICK STATS ---- */
+  .stats { padding: 0 24px 50px; }
+  .stats-inner {
+    max-width: 1440px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  }
+  .stat-card {
+    background: #fff; border-radius: 20px; padding: 24px 28px;
+    border: 1px solid #e2e8f0; transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); border-color: #cffafe; }
+  .stat-card::after {
+    content: ''; position: absolute; top: -20px; right: -20px;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #ecfeff, transparent);
+    opacity: 0.5; transition: transform 0.5s;
+  }
+  .stat-card:hover::after { transform: scale(1.5); }
+  .stat-card .stat-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: grid; place-items: center; margin-bottom: 14px;
+    font-size: 20px;
+  }
+  .stat-card .stat-label { font-size: 13px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; }
+  .stat-card .stat-value { font-size: 36px; font-weight: 900; color: #0f172a; margin-top: 4px; line-height: 1; }
+  .stat-card .stat-hint { font-size: 12px; color: #94a3b8; font-weight: 500; margin-top: 6px; }
+
+  .icon-cyan { background: #ecfeff; color: var(--cyan); }
+  .icon-violet { background: #f5f3ff; color: var(--violet); }
+  .icon-amber { background: #fffbeb; color: var(--amber); }
+  .icon-rose { background: #fff1f2; color: var(--rose); }
+
+  /* ---- TOPIC STRIP ---- */
+  .topics { padding: 60px 24px 50px; background: #fff; }
+  .topics-inner { max-width: 1440px; margin: 0 auto; }
+  .topics-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; }
+  .topics-header h2 { font-size: 26px; font-weight: 900; }
+  .topics-header h2 span { color: var(--cyan); }
+  .topics-header a { font-size: 14px; font-weight: 700; color: var(--cyan); text-decoration: none; }
+  .topic-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .topic-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 20px; border-radius: 16px;
+    text-decoration: none; transition: all 0.3s;
+    border: 1.5px solid #f1f5f9; background: #f8fafc;
+  }
+  .topic-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+  .topic-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: grid; place-items: center; font-size: 18px; font-weight: 900; flex-shrink: 0;
+  }
+  .topic-card .topic-name { font-size: 15px; font-weight: 800; color: #0f172a; }
+  .topic-card .topic-count { font-size: 12px; color: #94a3b8; font-weight: 600; }
+  .ti-sketchup { background: #f0f9ff; color: #0284c7; }
+  .ti-d5 { background: #f0fdf4; color: #16a34a; }
+  .ti-enscape { background: #fefce8; color: #ca8a04; }
+  .ti-lumion { background: #fff7ed; color: #ea580c; }
+  .ti-photoshop { background: #ecfeff; color: #0891b2; }
+  .ti-vray { background: #f5f3ff; color: #7c3aed; }
+  .ti-rhino { background: #ecfdf5; color: #059669; }
+  .ti-cad { background: #f1f5f9; color: #475569; }
+
+  /* ---- BANNER STRIP ---- */
+  .banner-strip { padding: 30px 24px 50px; background: #fff; }
+  .banner-inner {
+    max-width: 1440px; margin: 0 auto;
+    background: linear-gradient(135deg, #0f172a 0%, #1a2d3d 50%, #0f242e 100%);
+    border-radius: 28px; padding: 48px 56px; position: relative; overflow: hidden;
+  }
+  .banner-inner::before {
+    content: ''; position: absolute; top: -80px; right: -80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(6,182,212,0.15), transparent);
+  }
+  .banner-inner h2 { font-size: 28px; font-weight: 900; color: #fff; position: relative; }
+  .banner-inner h2 span { background: linear-gradient(135deg, #22d3ee, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .banner-inner p { color: #94a3b8; font-size: 15px; font-weight: 500; margin-top: 10px; position: relative; }
+  .banner-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-top: 32px; position: relative;
+  }
+  .banner-item {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 20px; transition: all 0.3s;
+  }
+  .banner-item:hover { background: rgba(255,255,255,0.1); border-color: rgba(6,182,212,0.3); }
+  .banner-item .b-num { font-size: 40px; font-weight: 900; color: #22d3ee; line-height: 1; }
+  .banner-item .b-label { font-size: 14px; font-weight: 700; color: #e2e8f0; margin-top: 8px; }
+  .banner-item .b-hint { font-size: 12px; color: #64748b; font-weight: 500; margin-top: 4px; }
+
+  /* ---- TICKER ---- */
+  .ticker { padding: 0 24px 40px; background: #fff; }
+  .ticker-inner {
+    max-width: 1440px; margin: 0 auto;
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 24px; border-radius: 16px;
+    background: #f8fafc; border: 1px solid #e2e8f0;
+  }
+  .ticker-badge {
+    padding: 5px 14px; border-radius: 50px;
+    background: linear-gradient(135deg, var(--cyan), var(--cyan-light));
+    color: #fff; font-size: 12px; font-weight: 800; white-space: nowrap;
+  }
+  .ticker-text { font-size: 14px; color: #475569; font-weight: 600; white-space: nowrap; overflow: hidden; }
+  .ticker-text a { color: var(--cyan); text-decoration: none; }
+
+  /* ---- RESOURCE SECTION ---- */
+  .resource-section { padding: 60px 24px; }
+  .resource-section:nth-child(even) { background: #fff; }
+  .section-inner { max-width: 1440px; margin: 0 auto; }
+  .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; }
+  .section-header .label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 800; color: var(--cyan); letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .section-header h2 { font-size: 28px; font-weight: 900; }
+  .section-header a { font-size: 14px; font-weight: 700; color: var(--cyan); text-decoration: none; }
+
+  .res-grid { display: grid; grid-template-columns: 1.1fr 1.5fr; gap: 20px; }
+  .res-card {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 20px;
+    overflow: hidden; transition: all 0.3s; text-decoration: none; color: inherit;
+    display: flex; flex-direction: column;
+  }
+  .res-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
+  .res-card .card-img {
+    position: relative; overflow: hidden; background: #f1f5f9;
+    aspect-ratio: 16/9;
+  }
+  .res-card.large .card-img { aspect-ratio: 21/9; }
+  .res-card .card-img img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s;
+  }
+  .res-card:hover .card-img img { transform: scale(1.05); }
+  .card-category {
+    position: absolute; top: 14px; left: 14px;
+    padding: 4px 12px; border-radius: 50px;
+    background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
+    font-size: 12px; font-weight: 700; color: #0f172a;
+  }
+  .card-body { padding: 18px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+  .card-meta { display: flex; gap: 12px; font-size: 12px; font-weight: 600; color: #94a3b8; margin-bottom: 8px; }
+  .card-title { font-size: 17px; font-weight: 800; color: #0f172a; line-height: 1.35; margin-bottom: 6px; }
+  .res-card:hover .card-title { color: var(--cyan); }
+  .card-desc { font-size: 13px; color: #64748b; font-weight: 500; line-height: 1.6; flex: 1; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; margin-top: auto; border-top: 1px solid #f1f5f9; }
+  .card-size { font-size: 12px; font-weight: 700; color: #64748b; background: #f8fafc; padding: 3px 10px; border-radius: 6px; }
+  .card-action {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 16px; border-radius: 50px;
+    background: #0f172a; color: #fff; font-size: 13px; font-weight: 700;
+  }
+  .card-action.download { background: var(--cyan); }
+  .card-action.watch { background: var(--violet); }
+
+  .small-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  /* ---- MEMBER SECTION ---- */
+  .member {
+    padding: 80px 24px;
+    background: linear-gradient(160deg, #0a1628 0%, #0f1f38 30%, #071018 100%);
+    position: relative; overflow: hidden;
+  }
+  .member::before {
+    content: ''; position: absolute; top: -120px; right: -120px;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(6,182,212,0.08), transparent 70%);
+  }
+  .member-inner {
+    max-width: 1440px; margin: 0 auto; position: relative;
+    display: grid; grid-template-columns: 1fr 480px; gap: 60px; align-items: center;
+  }
+  .member-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 14px; border-radius: 50px;
+    background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.2);
+    font-size: 12px; font-weight: 800; color: #67e8f9; margin-bottom: 20px;
+  }
+  .member h2 { font-size: 42px; font-weight: 900; color: #fff; line-height: 1.2; }
+  .member h2 span { background: linear-gradient(135deg, #22d3ee, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .member > .member-inner > div > p { color: #94a3b8; font-size: 16px; font-weight: 500; margin-top: 16px; line-height: 1.8; }
+  .member-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .member-item {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 18px; padding: 22px; transition: all 0.3s;
+  }
+  .member-item:hover { background: rgba(255,255,255,0.08); border-color: rgba(34,211,238,0.2); }
+  .member-item .mi-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, rgba(6,182,212,0.2), transparent);
+    display: grid; place-items: center; font-size: 20px;
+    border: 1px solid rgba(6,182,212,0.3); margin-bottom: 14px; color: #67e8f9;
+  }
+  .member-item h4 { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+  .member-item p { font-size: 13px; color: #64748b; font-weight: 500; line-height: 1.6; }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    background: #0f172a; color: #94a3b8; padding: 50px 24px 30px;
+  }
+  .footer-inner {
+    max-width: 1440px; margin: 0 auto;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  }
+  .footer .f-brand { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 10px; }
+  .footer .f-sub { font-size: 13px; line-height: 1.8; }
+  .footer h4 { font-size: 14px; font-weight: 800; color: #e2e8f0; margin-bottom: 14px; }
+  .footer a { display: block; font-size: 13px; color: #64748b; text-decoration: none; font-weight: 500; margin-bottom: 8px; transition: color 0.2s; }
+  .footer a:hover { color: #22d3ee; }
+  .footer-bottom {
+    max-width: 1440px; margin: 30px auto 0; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; justify-content: space-between; font-size: 12px; color: #475569;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 1024px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-main { min-height: 360px; grid-row: auto; }
+    .hero-side { min-height: 180px; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .topic-grid { grid-template-columns: repeat(2, 1fr); }
+    .res-grid { grid-template-columns: 1fr; }
+    .small-grid { grid-template-columns: repeat(2, 1fr); }
+    .member-inner { grid-template-columns: 1fr; }
+    .banner-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .search-box { width: 200px; }
+  }
+  @media (max-width: 640px) {
+    .hero-main h1 { font-size: 28px; }
+    .hero-main .content { padding: 28px; }
+    .stats-inner, .topic-grid, .small-grid, .banner-grid, .member-grid { grid-template-columns: 1fr; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .nav { display: none; }
+    .user-actions .btn-login { padding: 8px 16px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">薛</div>
+      <div class="logo-text">
+        <div class="brand">学与成设计网</div>
+        <div class="sub">XUEDDA DESIGN HUB</div>
+      </div>
+    </a>
+
+    <nav class="nav">
+      <a href="#" class="nav-active">首页</a>
+      <a href="#">SU模型</a>
+      <a href="#">教程课程</a>
+      <a href="#">材质贴图</a>
+      <a href="#">软件插件</a>
+      <a href="#">会员资源</a>
+    </nav>
+
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="搜索模型、教程、软件...">
+    </div>
+
+    <div class="user-actions">
+      <a href="#" class="btn-login">登 录</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <a href="#" class="hero-main">
+      <img src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1800&q=82" alt="">
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="hero-badge"><span class="dot"></span> 今日推荐</div>
+        <h1>D5 渲染全流程<br>从入门到项目交付</h1>
+        <p>覆盖界面设置、工作流衔接、材质灯光到最终出图的完整学习路径，配套素材可下载跟练。</p>
+        <span class="hero-btn">开始学习 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <a href="#" class="hero-side">
+      <img src="https://www.xuedda.com/uploads/images/20260517/824c77a76b527f6829aa033bf24f2e91.jpg" alt="">
+      <div class="side-overlay"></div>
+      <div class="side-content">
+        <span class="side-tag">热门模型</span>
+        <h2>SU 模型资源库</h2>
+      </div>
+    </a>
+
+    <a href="#" class="hero-side">
+      <img src="https://www.xuedda.com/uploads/images/20230524/a81b815356521566ec00dcb69a3622ea.jpg" alt="">
+      <div class="side-overlay"></div>
+      <div class="side-content">
+        <span class="side-tag">系统教程</span>
+        <h2>软件插件合集</h2>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- QUICK STATS -->
+<section class="stats">
+  <div class="stats-inner">
+    <div class="stat-card">
+      <div class="stat-icon icon-cyan">📐</div>
+      <div class="stat-label">SU 模型</div>
+      <div class="stat-value">3,200+</div>
+      <div class="stat-hint">建筑 · 工装 · 家装 · 园林</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-violet">🎓</div>
+      <div class="stat-label">专题教程</div>
+      <div class="stat-value">180+</div>
+      <div class="stat-hint">D5 · Layout · SketchUp</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-amber">🎨</div>
+      <div class="stat-label">素材下载</div>
+      <div class="stat-value">560+</div>
+      <div class="stat-hint">PBR · HDR · D5 材质</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-rose">⚙️</div>
+      <div class="stat-label">软件插件</div>
+      <div class="stat-value">120+</div>
+      <div class="stat-hint">安装包 · 渲染器 · 工具</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOPIC STRIP -->
+<section class="topics">
+  <div class="topics-inner">
+    <div class="topics-header">
+      <h2>按<span>软件和工作流</span>快速进入</h2>
+      <a href="#">查看更多专题 →</a>
+    </div>
+    <div class="topic-grid">
+      <a href="#" class="topic-card">
+        <div class="topic-icon ti-sketchup">SU</div>
+        <div><div class="topic-name">SKETCHUP</div><div class="topic-count">1,200+ 资源</div></div>
+      </a>
+      <a href="#" class="topic-card">
+        <div class="topic-icon ti-d5">D5</div>
+        <div><div class="topic-name">D5 RENDER</div><div class="topic-count">280+ 资源</div></div>
+      </a>
+      <a href="#" class="topic-card">
+        <div class="topic-icon ti-enscape">EN</div>
+        <div><div class="topic-name">ENSCAPE</div><div class="topic-count">160+ 资源</div></div>
+      </a>
+      <a href="#" class="topic-card">
+        <div class="topic-icon ti-lumion">LU</div>
+        <div><div class="topic-name">LUMION</div><div class="topic-count">95+ 资源</div></div>
+      </a>
+      <a href="#" class="topic-card">
+        <div class="topic-icon ti-photoshop">PS</div>
+        <div><div class="topic-name">PHOTOSHOP</div><div class="topic-count">45+ 资源</div></div>
+      </a>
+      <a href="#" class="topic-card">
+        <div class="topic-icon ti-vray">VR</div>
+        <div><div class="topic-name">V-RAY</div><div class="topic-count">72+ 资源</div></div>
+      </a>
+      <a href="#" class="topic-card">
+        <div class="topic-icon ti-rhino">RH</div>
+        <div><div class="topic-name">RHINO</div><div class="topic-count">38+ 资源</div></div>
+      </a>
+      <a href="#" class="topic-card">
+        <div class="topic-icon ti-cad">CA</div>
+        <div><div class="topic-name">CAD / 天正</div><div class="topic-count">52+ 资源</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- BANNER DATA STRIP -->
+<section class="banner-strip">
+  <div class="banner-inner">
+    <h2>为<span>设计师</span>打造的一站式资源平台</h2>
+    <p>每日更新精选模型、材质与教程，覆盖建筑、室内、景观全流程需求。</p>
+    <div class="banner-grid">
+      <div class="banner-item">
+        <div class="b-num">18</div>
+        <div class="b-label">待发布内容</div>
+        <div class="b-hint">模型、教程、软件持续更新</div>
+      </div>
+      <div class="banner-item">
+        <div class="b-num">4.8K</div>
+        <div class="b-label">本周新增浏览</div>
+        <div class="b-hint">日均 680+ 设计师浏览</div>
+      </div>
+      <div class="banner-item">
+        <div class="b-num">126</div>
+        <div class="b-label">会员专享资源</div>
+        <div class="b-hint">登录即可免费下载</div>
+      </div>
+      <div class="banner-item">
+        <div class="b-num">7×24</div>
+        <div class="b-label">在线客服社群</div>
+        <div class="b-hint">QQ群 + 微信 + 工单支持</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LATEST UPDATE TICKER -->
+<section class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-badge">📢 最新更新</span>
+    <span class="ticker-text"><a href="#">SU-20 蓝染特色文化艺术实践室</a> 已发布 · <a href="#">SU2026 版本</a> 安装包已更新 · <a href="#">10 组墙面 PBR 贴图</a> 限时免费</span>
+  </div>
+</section>
+
+<!-- RESOURCE SECTION 1: SU 模型 -->
+<section class="resource-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div>
+        <div class="label">SU / D5 MODEL</div>
+        <h2>SU 模型资源</h2>
+      </div>
+      <a href="#">查看全部 →</a>
+    </div>
+    <div class="res-grid">
+      <a href="#" class="res-card large">
+        <div class="card-img">
+          <img src="https://www.xuedda.com/uploads/images/20260517/824c77a76b527f6829aa033bf24f2e91.jpg" alt="">
+          <span class="card-category">教育</span>
+        </div>
+        <div class="card-body">
+          <div class="card-meta"><span>2026-05-17</span><span>9 ℃</span></div>
+          <div class="card-title">SU-20 蓝染特色文化艺术实践室</div>
+          <div class="card-desc">教育空间模型，包含完整室内场景与蓝染主题陈设，适合工装教育场景方案表达。</div>
+          <div class="card-footer">
+            <span class="card-size">378 MB / SKP</span>
+            <span class="card-action download">下载</span>
+          </div>
+        </div>
+      </a>
+      <div class="small-grid">
+        <a href="#" class="res-card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=82" alt="">
+            <span class="card-category">教育</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta"><span>2026-05-17</span><span>1 ℃</span></div>
+            <div class="card-title">SU-19 绿植沉浸式儿童创意工坊</div>
+            <div class="card-footer">
+              <span class="card-size">SU / 室内</span>
+              <span class="card-action download">下载</span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="res-card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=82" alt="">
+            <span class="card-category">教育</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta"><span>2026-05-17</span><span>4 ℃</span></div>
+            <div class="card-title">SU-18 阳光通透型幼儿园美劳游戏室</div>
+            <div class="card-footer">
+              <span class="card-size">SU / 教育</span>
+              <span class="card-action download">看详情</span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="res-card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1617104678098-de229db51175?auto=format&fit=crop&w=1200&q=82" alt="">
+            <span class="card-category">D5 家具</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta"><span>2023-07-23</span><span>1.3K ℃</span></div>
+            <div class="card-title">D5 素材 - 中式桌椅组合</div>
+            <div class="card-footer">
+              <span class="card-size">D5 / SU</span>
+              <span class="card-action download">下载</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCE SECTION 2: 教程 -->
+<section class="resource-section" style="background:#fff;">
+  <div class="section-inner">
+    <div class="section-header">
+      <div>
+        <div class="label">COURSE</div>
+        <h2>薛大大教学</h2>
+      </div>
+      <a href="#">查看全部 →</a>
+    </div>
+    <div class="res-grid">
+      <a href="#" class="res-card large">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1200&q=82" alt="">
+          <span class="card-category">D5 教程</span>
+        </div>
+        <div class="card-body">
+          <div class="card-meta"><span>2023-06-29</span><span>533 ℃</span></div>
+          <div class="card-title">D5 教程 — 2 工作流</div>
+          <div class="card-desc">围绕真实项目表现整理 D5 渲染工作流，从界面设置到最终出图全流程覆盖。</div>
+          <div class="card-footer">
+            <span class="card-size">课程章节</span>
+            <span class="card-action watch">观看</span>
+          </div>
+        </div>
+      </a>
+      <div class="small-grid">
+        <a href="#" class="res-card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=82" alt="">
+            <span class="card-category">教程素材</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta"><span>2023-06-29</span><span>87 ℃</span></div>
+            <div class="card-title">教学素材 - 2 工作流</div>
+            <div class="card-footer">
+              <span class="card-size">配套素材</span>
+              <span class="card-action download">下载</span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="res-card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1600566753151-384129cf4e3e?auto=format&fit=crop&w=1200&q=82" alt="">
+            <span class="card-category">D5 教程</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta"><span>2023-06-24</span><span>340 ℃</span></div>
+            <div class="card-title">D5 教程 - 1 界面与设置</div>
+            <div class="card-footer">
+              <span class="card-size">入门课程</span>
+              <span class="card-action watch">观看</span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="res-card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1200&q=82" alt="">
+            <span class="card-category">Layout</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta"><span>2023-06-20</span><span>114 ℃</span></div>
+            <div class="card-title">Layout 施工图教程 - 绘图命令</div>
+            <div class="card-footer">
+              <span class="card-size">施工图</span>
+              <span class="card-action watch">观看</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBER SECTION -->
+<section class="member">
+  <div class="member-inner">
+    <div>
+      <div class="member-badge">⭐ 会员中心</div>
+      <h2>把下载、收藏、记录<br>做成<span>真正的个人资源库</span></h2>
+      <p>旧站已有登录、动态、收藏、记录、客服、官方群和每日签到。新版会员中心整合账号系统、下载记录、积分和专属资源。</p>
+    </div>
+    <div class="member-grid">
+      <div class="member-item">
+        <div class="mi-icon">📥</div>
+        <h4>会员下载</h4>
+        <p>按公开、会员、VIP 分层控制资源权限</p>
+      </div>
+      <div class="member-item">
+        <div class="mi-icon">⭐</div>
+        <h4>我的收藏</h4>
+        <p>把常用模型和教程沉淀为个人知识库</p>
+      </div>
+      <div class="member-item">
+        <div class="mi-icon">📋</div>
+        <h4>浏览记录</h4>
+        <p>继续上次学习和下载路径不中断</p>
+      </div>
+      <div class="member-item">
+        <div class="mi-icon">💬</div>
+        <h4>客服社群</h4>
+        <p>对接在线客服、QQ 群和公众号</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="f-brand">学与成设计网</div>
+      <p class="f-sub">为建筑、室内、景观设计师提供 SKP 模型、D5 教程、材质贴图和软件插件的一站式资源平台。</p>
+    </div>
+    <div>
+      <h4>资源分类</h4>
+      <a href="#">SU 模型</a>
+      <a href="#">D5 模型</a>
+      <a href="#">教程课程</a>
+      <a href="#">材质贴图</a>
+      <a href="#">软件插件</a>
+    </div>
+    <div>
+      <h4>会员服务</h4>
+      <a href="#">会员下载</a>
+      <a href="#">我的收藏</a>
+      <a href="#">浏览记录</a>
+      <a href="#">每日签到</a>
+    </div>
+    <div>
+      <h4>关于我们</h4>
+      <a href="#">QQ 群：316933095</a>
+      <a href="#">微信公众号</a>
+      <a href="#">B站教程</a>
+      <a href="#">意见反馈</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 学与成设计网 xuedda.com · 苏ICP备17050823号</span>
+    <span>Powered by Next.js</span>
+  </div>
+</footer>
+
+</body>
+</html>

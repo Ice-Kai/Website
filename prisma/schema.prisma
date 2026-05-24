@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  MEMBER
+}
+
+enum ContentType {
+  NEWS
+  MODEL
+  COURSE
+  MATERIAL
+  SOFTWARE
+  CASE_STUDY
+  PAGE
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Visibility {
+  PUBLIC
+  MEMBER
+  VIP
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String?
+  name         String
+  avatarUrl    String?
+  role         UserRole @default(MEMBER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  description String?
+  sortOrder   Int          @default(0)
+  type        ContentType
+  parentId    String?
+  parent      Category?    @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[]   @relation("CategoryTree")
+  items       ContentItem[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Tag {
+  id        String        @id @default(cuid())
+  name      String
+  slug      String        @unique
+  items     ContentItem[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model ContentItem {
+  id            String         @id @default(cuid())
+  title         String
+  slug          String         @unique
+  summary       String?
+  content       String?
+  coverImage    String?
+  contentType   ContentType
+  status        ContentStatus  @default(DRAFT)
+  visibility    Visibility     @default(PUBLIC)
+  isFeatured    Boolean        @default(false)
+  featuredOrder Int            @default(0)
+  viewCount     Int            @default(0)
+  downloadCount Int            @default(0)
+  seoTitle      String?
+  seoDescription String?
+  extra         Json?
+  publishedAt   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  categories    Category[]
+  tags          Tag[]
+  files         ResourceFile[]
+}
+
+model ResourceFile {
+  id           String      @id @default(cuid())
+  contentItemId String
+  label        String
+  fileUrl      String
+  fileSize     String?
+  provider     String?
+  password     String?
+  sortOrder    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  contentItem  ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+}

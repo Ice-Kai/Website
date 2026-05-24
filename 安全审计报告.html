@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学与成设计网 — 安全审计报告</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  :root {
+    --red: #dc2626; --red-bg: #fef2f2; --red-border: #fecaca;
+    --amber: #d97706; --amber-bg: #fffbeb; --amber-border: #fde68a;
+    --green: #059669; --green-bg: #ecfdf5; --green-border: #a7f3d0;
+    --blue: #2563eb;
+    --gray: #6b7280;
+    --text: #1f2937;
+    --border: #e5e7eb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    color: var(--text);
+    line-height: 1.75;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background: #f9fafb;
+  }
+  .cover {
+    text-align: center;
+    padding: 60px 0 50px;
+    page-break-after: always;
+  }
+  .cover h1 { font-size: 32px; margin-bottom: 12px; letter-spacing: 2px; }
+  .cover .sub { font-size: 18px; color: var(--red); font-weight: 600; margin-bottom: 30px; }
+  .cover .meta { color: var(--gray); font-size: 14px; }
+  .cover .meta p { margin: 4px 0; }
+  .cover .divider { width: 80px; height: 3px; background: var(--red); margin: 24px auto; }
+
+  h2 {
+    font-size: 22px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 8px;
+    margin: 36px 0 16px;
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; color: #374151; }
+  h4 { font-size: 15px; margin: 16px 0 6px; }
+
+  .overview-grid { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+  .overview-card {
+    flex: 1; min-width: 180px;
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 16px; text-align: center;
+  }
+  .overview-card .num { font-size: 36px; font-weight: 700; }
+  .overview-card .label { font-size: 13px; color: var(--gray); margin-top: 4px; }
+  .num.critical { color: var(--red); }
+  .num.high { color: #ea580c; }
+  .num.medium { color: var(--amber); }
+  .num.low { color: var(--green); }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 14px; }
+  th { background: #f3f4f6; padding: 10px 12px; text-align: left; font-weight: 600; border: 1px solid var(--border); }
+  td { padding: 10px 12px; border: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+  .badge-critical { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .badge-high { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+  .badge-medium { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+  .badge-low { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+
+  .finding {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px 22px; margin: 14px 0;
+    border-left: 4px solid var(--border);
+  }
+  .finding.critical { border-left-color: var(--red); }
+  .finding.high { border-left-color: #ea580c; }
+  .finding.medium { border-left-color: var(--amber); }
+  .finding.low { border-left-color: var(--green); }
+
+  .finding .title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .finding .desc { font-size: 14px; color: #4b5563; margin-bottom: 10px; }
+  .finding .detail { font-size: 13px; color: #6b7280; }
+  .finding .fix { background: var(--green-bg); border-radius: 6px; padding: 10px 14px; margin-top: 10px; font-size: 13px; }
+  .fix .fix-title { font-weight: 700; color: var(--green); }
+
+  .tech-stack { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 20px; }
+  .tech-stack span {
+    background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe;
+    padding: 4px 12px; border-radius: 14px; font-size: 13px; font-weight: 500;
+  }
+
+  .section-intro { color: #6b7280; font-size: 14px; margin-bottom: 12px; }
+
+  code {
+    background: #f1f5f9; padding: 1px 6px; border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 13px; color: #e11d48;
+  }
+  pre {
+    background: #1e293b; color: #e2e8f0;
+    padding: 14px 18px; border-radius: 8px;
+    overflow-x: auto; font-size: 13px; line-height: 1.6;
+    margin: 8px 0 16px;
+  }
+  pre code { background: none; color: inherit; padding: 0; }
+
+  .comparison { display: flex; gap: 16px; margin: 12px 0; }
+  .comparison > div {
+    flex: 1; border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; font-size: 13px;
+  }
+  .comparison .before { background: #fef2f2; }
+  .comparison .after { background: #ecfdf5; }
+  .comparison .c-title { font-weight: 700; margin-bottom: 8px; font-size: 14px; }
+
+  .checklist { list-style: none; }
+  .checklist li { padding: 4px 0 4px 20px; position: relative; font-size: 14px; }
+  .checklist li::before { content: '☐'; position: absolute; left: 0; color: var(--gray); }
+  .checklist li.done { color: var(--green); }
+  .checklist li.done::before { content: '☑'; color: var(--green); }
+
+  .footer { margin-top: 50px; padding: 20px 0; border-top: 1px solid var(--border); color: var(--gray); font-size: 13px; text-align: center; page-break-inside: avoid; }
+
+  @media print {
+    body { background: #fff; padding: 0; max-width: 100%; }
+    .finding { break-inside: avoid; }
+    table { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== 封面 ========== -->
+<div class="cover">
+  <h1>学与成设计网</h1>
+  <div class="sub">安全审计报告</div>
+  <div class="divider"></div>
+  <div class="meta">
+    <p>审计对象：https://www.xuedda.com</p>
+    <p>审计日期：2026 年 5 月 18 日</p>
+    <p>框架识别：LzCMS v1.1.4 / Nginx / PHP</p>
+    <p>审计范围：公网可访问资产（前端 + 后台入口 + 配置泄露）</p>
+    <p><strong>密级：内部</strong></p>
+  </div>
+</div>
+
+<!-- ========== 概览 ========== -->
+<h2>一、风险概览</h2>
+<div class="overview-grid">
+  <div class="overview-card"><div class="num critical">2</div><div class="label">🔴 严重</div></div>
+  <div class="overview-card"><div class="num high">3</div><div class="label">🟠 高危</div></div>
+  <div class="overview-card"><div class="num medium">4</div><div class="label">🟡 中危</div></div>
+  <div class="overview-card"><div class="num low">3</div><div class="label">🟢 低危</div></div>
+</div>
+<div class="section-intro">审计共发现 <strong>12</strong> 个安全问题。严重问题均涉及后台访问控制失效与 CMS 版本信息泄露；高危问题集中于 Cookie 安全与请求伪造防护缺失。</div>
+
+<!-- ========== 环境信息 ========== -->
+<h2>二、目标环境信息</h2>
+<table>
+  <tr><td style="width:140px">服务器</td><td>Nginx</td></tr>
+  <tr><td>语言 / CMS</td><td>PHP · LzCMS v1.1.4（老张CMS）</td></tr>
+  <tr><td>HTTPS</td><td>✅ 已启用 / HSTS max-age=31536000</td></tr>
+  <tr><td>管理后台</td><td>https://www.xuedda.com/admin/index/index.html（公网可达）</td></tr>
+  <tr><td>上传目录</td><td>/uploads/images/YYYYMMDD/ （403 禁止列目录，但文件可直链访问）</td></tr>
+  <tr><td>Cookie</td><td>PHPSESSID（缺少 HttpOnly / Secure / SameSite）</td></tr>
+</table>
+
+<!-- ========== 漏洞详情 ========== -->
+<h2>三、漏洞详情</h2>
+
+<!-- C-01 -->
+<div class="finding critical">
+  <div class="title"><span class="badge badge-critical">严重</span> C-01 · 管理后台公网暴露</div>
+  <div class="desc">后台登录页 <code>/admin/index/index.html</code> 可被任意公网用户直接访问，无 IP 白名单、无 VPN 限制、无二次认证。</div>
+  <div class="detail">攻击者可对后台登录接口进行暴力破解、撞库攻击；若用户名密码泄露，可直接接管全站内容。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>1. Nginx 层对 <code>/admin/</code> 加 IP 白名单：</p>
+    <pre><code>location /admin/ {
+    allow 你的办公IP;
+    deny all;
+}</code></pre>
+    <p>2. 后台登录增加 MFA（TOTP）二步验证。<br>3. 敏感操作（删除/批量修改）二次确认码。</p>
+  </div>
+</div>
+
+<!-- C-02 -->
+<div class="finding critical">
+  <div class="title"><span class="badge badge-critical">严重</span> C-02 · CMS 版本信息明文泄露</div>
+  <div class="desc">页面底部显示 <code>Powered by LzCMS! v1.1.4</code>，后台登录页标题为 <code>LzCMS-后台管理中心</code>。</div>
+  <div class="detail">攻击者可依据公开的 LzCMS v1.1.4 漏洞库（如文件上传、SQL 注入、RCE）直接构造攻击载荷。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>1. 删除或修改 CMS 版权标识。<br>2. 后台登录页标题改为通用的 "管理登录" 或 "Admin Login"。<br>3. 修改默认后台路径，如一键更换后台入口目录。</p>
+  </div>
+</div>
+
+<!-- H-01 -->
+<div class="finding high">
+  <div class="title"><span class="badge badge-high">高危</span> H-01 · Cookie 缺少安全标记</div>
+  <div class="desc"><code>Set-Cookie: PHPSESSID=xxx; path=/</code> 缺少 <code>HttpOnly</code>、<code>Secure</code>、<code>SameSite</code> 属性。</div>
+  <div class="detail">XSS 攻击可读取 session cookie 并劫持用户身份；中间人攻击可窃取 cookie。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>PHP 配置 <code>php.ini</code>：</p>
+    <pre><code>session.cookie_httponly = 1
+session.cookie_secure = 1
+session.cookie_samesite = "Lax"</code></pre>
+  </div>
+</div>
+
+<!-- H-02 -->
+<div class="finding high">
+  <div class="title"><span class="badge badge-high">高危</span> H-02 · 缺少安全响应头</div>
+  <div class="desc">网站未返回 <code>Content-Security-Policy</code>、<code>X-Frame-Options</code>、<code>X-Content-Type-Options</code> 等安全头。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>Nginx 配置添加：</p>
+    <pre><code>add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;";
+add_header X-Frame-Options "SAMEORIGIN";
+add_header X-Content-Type-Options "nosniff";
+add_header Referrer-Policy "strict-origin-when-cross-origin";
+add_header Permissions-Policy "geolocation=(), microphone=()";</code></pre>
+  </div>
+</div>
+
+<!-- H-03 -->
+<div class="finding high">
+  <div class="title"><span class="badge badge-high">高危</span> H-03 · ID 遍历 / 接口枚举</div>
+  <div class="desc">URL 使用自增 ID：<code>/index/download/show/id/1.html</code>，访问不存在的 ID 返回 500 而非 404。</div>
+  <div class="detail">攻击者可遍历所有资源记录，批量抓取整站数据；500 错误可能回显数据库报错信息（SQL 注入风险）。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>1. 资源不存在时统一返回 404，不输出数据库错误。<br>2. 未登录/非会员无法访问会员资源时应返回 403。<br>3. 长期方案：资源 slug 化或用 UUID 替代自增 ID。</p>
+  </div>
+</div>
+
+<!-- M-01 -->
+<div class="finding medium">
+  <div class="title"><span class="badge badge-medium">中危</span> M-01 · robots.txt 暴露后台路径</div>
+  <div class="desc"><code>robots.txt</code> 内容为：<code>Disallow: /admin/</code>。虽然禁止搜索引擎抓取，但也直接告诉了攻击者后台所在。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>如果已改后台入口目录，可将 <code>robots.txt</code> 设为通配 <code>Disallow: /</code> 或删除后台路径声明。</p>
+  </div>
+</div>
+
+<!-- M-02 -->
+<div class="finding medium">
+  <div class="title"><span class="badge badge-medium">中危</span> M-02 · 登录表单无 CSRF 防护</div>
+  <div class="desc">前台登录页面未见到 CSRF Token；攻击者可伪造请求诱导用户执行非预期操作。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>所有状态变更请求（POST/PUT/DELETE）添加 CSRF Token，服务端校验。</p>
+  </div>
+</div>
+
+<!-- M-03 -->
+<div class="finding medium">
+  <div class="title"><span class="badge badge-medium">中危</span> M-03 · 上传目录文件可预测访问</div>
+  <div class="desc">图片路径格式为 <code>/uploads/images/20260517/xxx_thumb_320_180.jpg</code>，按日期+文件名模块，可被预测枚举。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>1. 会员资源的上传图片应通过鉴权接口代理输出而非直接暴露。<br>2. 文件名使用 UUID 命名，避免可预测。</p>
+  </div>
+</div>
+
+<!-- M-04 -->
+<div class="finding medium">
+  <div class="title"><span class="badge badge-medium">中危</span> M-04 · 无登录失败限制 / 验证码</div>
+  <div class="desc">后台和前台登录均未见验证码或失败次数限制，可被暴力破解。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>1. 同一 IP / 账号连续失败 5 次锁定 15 分钟。<br>2. 添加数学题验证码或滑动验证码。</p>
+  </div>
+</div>
+
+<!-- L-01 -->
+<div class="finding low">
+  <div class="title"><span class="badge badge-low">低危</span> L-01 · 软件版权风险</div>
+  <div class="desc">网站分发大量「和谐版」商业软件（SU2025、ENS4.0 等），存在 DMCA/著作权侵权风险。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>建议只保留免费/开源软件和原创教程，降低法务风险。</p>
+  </div>
+</div>
+
+<!-- L-02 -->
+<div class="finding low">
+  <div class="title"><span class="badge badge-low">低危</span> L-02 · 无备份与日志监控</div>
+  <div class="desc">未见 WAF 或异常访问告警机制，攻击发生后难以追溯。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>接入 Cloudflare WAF / 安全组，开启 Nginx access log 分析，定期备份数据库与文件。</p>
+  </div>
+</div>
+
+<!-- L-03 -->
+<div class="finding low">
+  <div class="title"><span class="badge badge-low">低危</span> L-03 · 第三方资源未校验完整性</div>
+  <div class="desc">页面引用了第三方图片及外部域名（qqimg.com、bilibili.com 等），未使用 SRI 校验。</div>
+  <div class="fix">
+    <div class="fix-title">🔧 修复建议</div>
+    <p>可使用 CSP <code>require-sri-for</code> 或对关键 JS 资源添加 <code>integrity</code> 属性。</p>
+  </div>
+</div>
+
+<!-- ========== 对比：当前 vs 新架构 ========== -->
+<h2>四、当前旧站 vs Next.js 新站对比</h2>
+
+<div class="comparison">
+  <div class="before">
+    <div class="c-title">❌ 当前旧站（LzCMS / PHP）</div>
+    <ul style="padding-left:18px;color:#b91c1c;font-size:13px;">
+      <li>后台路径暴露</li>
+      <li>CMS 版本公开</li>
+      <li>Cookie 无 HttpOnly/Secure</li>
+      <li>无 CSP / HSTS 不完整</li>
+      <li>自增 ID 可枚举</li>
+      <li>500 错误泄露细节</li>
+      <li>无 CSRF 防护</li>
+      <li>无登录失败限制</li>
+    </ul>
+  </div>
+  <div class="after">
+    <div class="c-title">✅ 新站规划（Next.js 16 + Prisma + PostgreSQL）</div>
+    <ul style="padding-left:18px;color:#059669;font-size:13px;">
+      <li>内置 middleware 鉴权路由守卫</li>
+      <li>无版本标识泄露</li>
+      <li>Session cookie 全属性标记</li>
+      <li>统一安全头中间件</li>
+      <li>Slug / UUID 路由</li>
+      <li>统一错误页 + 日志分离</li>
+      <li>next-auth / CSRF token 原生支持</li>
+      <li>Rate limiting + 验证码</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ========== 新站加固方案 ========== -->
+<h2>五、Next.js 新站安全加固方案</h2>
+
+<h3>5.1 推荐技术栈</h3>
+<div class="tech-stack">
+  <span>Next.js 16 (App Router)</span>
+  <span>next-auth / Auth.js</span>
+  <span>Prisma + PostgreSQL</span>
+  <span>Zod 校验</span>
+  <span>Helmet.js</span>
+  <span>Cloudflare WAF</span>
+  <span>Rate Limiting</span>
+  <span>Argon2 密码哈希</span>
+</div>
+
+<h3>5.2 安全加固清单</h3>
+
+<table>
+  <tr><th style="width:30px">#</th><th>措施</th><th>实现方式</th><th>优先级</th></tr>
+  <tr>
+    <td>1</td>
+    <td>后台路径隐藏</td>
+    <td>使用自定义 basePath 或反向代理映射，不走 <code>/admin</code> 常见路径</td>
+    <td><span class="badge badge-critical">严重</span></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Admin 中间件鉴权</td>
+    <td>在 <code>middleware.ts</code> 中校验 session role，非 ADMIN 重定向 404</td>
+    <td><span class="badge badge-critical">严重</span></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Next.js 安全头</td>
+    <td><code>next.config.ts</code> 中配置 headers() 注入 CSP 等安全头</td>
+    <td><span class="badge badge-high">高危</span></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>Cookie 安全</td>
+    <td>Session cookie 设置 httpOnly / secure / sameSite='lax'</td>
+    <td><span class="badge badge-high">高危</span></td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>Rate Limiting</td>
+    <td>登录/API 接口使用 <code>upstash/ratelimit</code> 或 Redis 计数限流</td>
+    <td><span class="badge badge-high">高危</span></td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>CSRF 防护</td>
+    <td>next-auth 自带 CSRF token；纯 API 使用 SameSite Cookie + Origin 头校验</td>
+    <td><span class="badge badge-medium">中危</span></td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>输入校验</td>
+    <td>所有 API route 入参用 Zod schema 校验，防止注入</td>
+    <td><span class="badge badge-medium">中危</span></td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>统一错误处理</td>
+    <td>全局 <code>error.tsx</code> 和 <code>not-found.tsx</code>，不暴露堆栈</td>
+    <td><span class="badge badge-medium">中危</span></td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td>资源 Slug 化</td>
+    <td>文章/下载使用 slug 代替自增 ID，数据库保留 ID 仅作内部引用</td>
+    <td><span class="badge badge-medium">中危</span></td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td>文件上传安全</td>
+    <td>校验 MIME 类型、文件大小限制；非公开资源走鉴权代理下载</td>
+    <td><span class="badge badge-medium">中危</span></td>
+  </tr>
+  <tr>
+    <td>11</td>
+    <td>MFA 支持</td>
+    <td>接入 TOTP（speakeasy/otplib），管理员强制二次验证</td>
+    <td><span class="badge badge-low">低危</span></td>
+  </tr>
+  <tr>
+    <td>12</td>
+    <td>审计日志</td>
+    <td>管理员操作写入 AuditLog 表，关键操作不可删除</td>
+    <td><span class="badge badge-low">低危</span></td>
+  </tr>
+</table>
+
+<h3>5.3 关键代码示例</h3>
+
+<h4>middleware.ts — Admin 路由守卫</h4>
+<pre><code>// src/middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const isAdmin = token?.role === 'ADMIN';
+
+  if (req.nextUrl.pathname.startsWith('/admin')) {
+    if (!isAdmin) {
+      return NextResponse.redirect(new URL('/404', req.url));
+    }
+  }
+  return NextResponse.next();
+}
+
+export const config = { matcher: ['/admin/:path*'] };</code></pre>
+
+<h4>next.config.ts — 安全响应头</h4>
+<pre><code>// next.config.ts
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+  async headers() {
+    return [{
+      source: '/(.*)',
+      headers: [
+        { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        {
+          key: 'Content-Security-Policy',
+          value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self';"
+        },
+      ],
+    }];
+  },
+};
+
+export default nextConfig;</code></pre>
+
+<h4>API Route — 输入校验 (Zod)</h4>
+<pre><code>// src/app/api/download/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+const DownloadInput = z.object({
+  title: z.string().min(1).max(200),
+  url: z.string().url(),
+  password: z.string().max(100),
+  categoryId: z.number().int().positive(),
+  sortOrder: z.number().int().min(0),
+});
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const parsed = DownloadInput.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: '参数校验失败' }, { status: 400 });
+  }
+  // 写入数据库...
+}</code></pre>
+
+<h4>登录限流 (Upstash Redis)</h4>
+<pre><code>// src/lib/rate-limit.ts
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+export const loginRateLimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(5, '15 m'),
+  analytics: true,
+});
+
+// 在 API route 中使用
+const { success } = await loginRateLimit.limit(req.ip ?? 'unknown');
+if (!success) {
+  return NextResponse.json({ error: '操作过于频繁，请15分钟后重试' }, { status: 429 });
+}</code></pre>
+
+<!-- ========== 优先级路线图 ========== -->
+<h2>六、修复优先级路线图</h2>
+
+<table>
+  <tr><th>阶段</th><th>时间</th><th>内容</th></tr>
+  <tr>
+    <td><span class="badge badge-critical">P0 紧急</span></td>
+    <td>1-3 天</td>
+    <td>Nginx IP 白名单限制 /admin/；删除 CMS 版本标识；配置基础安全头</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-high">P1 高优</span></td>
+    <td>1-2 周</td>
+    <td>Cookie 安全标记；CSRF 防护；登录失败限制 + 验证码</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-medium">P2 中优</span></td>
+    <td>1 个月</td>
+    <td>Next.js 新站 admin 中间件；Zod 输入校验；统一错误处理；资源 Slug 化</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-low">P3 低优</span></td>
+    <td>持续</td>
+    <td>MFA 支持；审计日志；WAF 接入；第三方资源 SRI</td>
+  </tr>
+</table>
+
+<!-- ========== 附录 ========== -->
+<h2>七、附录</h2>
+<h3>A. 旧站问题对应新站解决方案映射</h3>
+<table>
+  <tr><th>旧站问题</th><th>新站 (Next.js) 对应方案</th></tr>
+  <tr><td>后台路径暴露</td><td>middleware.ts 路由守卫 + 自定义 basePath</td></tr>
+  <tr><td>CMS 版本泄露</td><td>不输出任何框架标识</td></tr>
+  <tr><td>Cookie 不安全</td><td>next-auth / 自定义 session cookie 全属性</td></tr>
+  <tr><td>无安全头</td><td>next.config.ts headers()</td></tr>
+  <tr><td>ID 遍历</td><td>Slug 路由 + Prisma 参数化查询</td></tr>
+  <tr><td>500 错误泄露</td><td>全局 error.tsx / error boundary</td></tr>
+  <tr><td>无 CSRF</td><td>next-auth CSRF token / SameSite Cookie</td></tr>
+  <tr><td>无限流</td><td>Upstash Ratelimit / Redis</td></tr>
+  <tr><td>SQL 注入风险</td><td>Prisma ORM 天然参数化</td></tr>
+  <tr><td>上传无校验</td><td>Zod 校验 + MIME 过滤 + 大小限制</td></tr>
+</table>
+
+<h3>B. Nginx 建议配置（旧站应急加固）</h3>
+<pre><code># 后台 IP 白名单
+location /admin/ {
+    allow 123.456.789.0;   # 替换为实际办公 IP
+    deny all;
+}
+
+# 隐藏 Nginx 版本号
+server_tokens off;
+
+# 通用安全头
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+# 限制请求速率
+limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
+location /index/member/login.html {
+    limit_req zone=login burst=3 nodelay;
+}</code></pre>
+
+<div class="footer">
+  <p>本报告为内部安全审计产出，仅供 xuedda.com 技术团队参考，请勿外传。</p>
+  <p>生成时间：2026-05-18 · 审计工具：手工探测 + 公网信息收集</p>
+</div>
+
+</body>
+</html>
