@@ -12,6 +12,13 @@ const requestSchema = z.object({
   style: z.string().trim().max(64).optional(),
 });
 
+function getImageUrls(data: unknown): { imageUrl: string | null; downloadUrl: string | null } {
+  return {
+    imageUrl: getImageUrl(data),
+    downloadUrl: getDownloadUrl(data),
+  };
+}
+
 function getImageUrl(data: unknown): string | null {
   if (!data || typeof data !== "object") return null;
 
@@ -64,13 +71,16 @@ function findImageInUnknown(input: unknown, seen = new Set<unknown>()): string |
   if (!input) return null;
 
   if (typeof input === "string") {
+    const markdownImage = input.match(/!\[[^\]]*]\((https?:\/\/[^)\s"'<>]+)\)/i)?.[1];
+    if (markdownImage) return markdownImage;
+
     const dataUri = input.match(/data:image\/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/=]+/)?.[0];
     if (dataUri) return dataUri;
 
-    const imageUrl = input.match(/https?:\/\/[^\s"'<>]+\.(?:png|jpe?g|webp|gif)(?:\?[^\s"'<>]*)?/i)?.[0];
+    const imageUrl = input.match(/https?:\/\/[^\s"'<>)\]]+\.(?:png|jpe?g|webp|gif)(?:\?[^\s"'<>)\]]*)?/i)?.[0];
     if (imageUrl) return imageUrl;
 
-    const anyUrl = input.match(/https?:\/\/[^\s"'<>]+/i)?.[0];
+    const anyUrl = input.match(/https?:\/\/[^\s"'<>)\]]+/i)?.[0];
     if (anyUrl) return anyUrl;
 
     if (/^[A-Za-z0-9+/=\s]{1000,}$/.test(input)) {
@@ -124,6 +134,17 @@ function findImageInUnknown(input: unknown, seen = new Set<unknown>()): string |
   }
 
   return null;
+}
+
+function getDownloadUrl(data: unknown): string | null {
+  if (!data) return null;
+
+  const text = typeof data === "string" ? data : JSON.stringify(data);
+  const markdownDownload = text.match(/\[[^\]]*(?:下载|download)[^\]]*]\((https?:\/\/[^)\s"'<>]+)\)/i)?.[1];
+  if (markdownDownload) return markdownDownload;
+
+  const downloadUrl = text.match(/https?:\/\/[^\s"'<>)\]]*(?:download|dloss|\/dl\/)[^\s"'<>)\]]*/i)?.[0];
+  return downloadUrl ?? null;
 }
 
 function getImageUrlFromMessageContent(content: unknown): string | null {
@@ -282,7 +303,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const imageUrl = getImageUrl(data);
+  const { imageUrl, downloadUrl } = getImageUrls(data);
 
   if (!imageUrl) {
     return NextResponse.json(
@@ -291,5 +312,5 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ imageUrl, upstream: data });
+  return NextResponse.json({ imageUrl, downloadUrl: downloadUrl ?? imageUrl, upstream: data });
 }

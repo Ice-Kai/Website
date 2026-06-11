@@ -66,6 +66,7 @@ export function AiImageWorkbench() {
   const [prompt, setPrompt] = useState("");
   const [size, setSize] = useState(sizeOptions[1].value);
   const [imageUrl, setImageUrl] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState("");
   const [error, setError] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -97,6 +98,7 @@ export function AiImageWorkbench() {
       }
 
       setImageUrl(data.imageUrl);
+      setDownloadUrl(data.downloadUrl || data.imageUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "生成失败，请稍后重试。");
     } finally {
@@ -105,10 +107,11 @@ export function AiImageWorkbench() {
   }
 
   async function handleDownloadImage() {
-    if (!imageUrl) return;
+    const targetUrl = downloadUrl || imageUrl;
+    if (!targetUrl) return;
 
     try {
-      const response = await fetch(imageUrl);
+      const response = await fetch(targetUrl);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -119,7 +122,7 @@ export function AiImageWorkbench() {
       link.remove();
       URL.revokeObjectURL(url);
     } catch {
-      window.open(imageUrl, "_blank", "noopener,noreferrer");
+      window.open(targetUrl, "_blank", "noopener,noreferrer");
     }
   }
 
