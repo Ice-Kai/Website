@@ -312,5 +312,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ imageUrl, downloadUrl: downloadUrl ?? imageUrl, upstream: data });
+  return NextResponse.json({
+    imageUrl,
+    previewUrl: `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`,
+    downloadUrl: downloadUrl ?? imageUrl,
+    upstream: data,
+  });
 }

@@ -66,6 +66,7 @@ export function AiImageWorkbench() {
   const [prompt, setPrompt] = useState("");
   const [size, setSize] = useState(sizeOptions[1].value);
   const [imageUrl, setImageUrl] = useState("");
+  const [previewUrl, setPreviewUrl] = useState("");
   const [downloadUrl, setDownloadUrl] = useState("");
   const [error, setError] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -98,6 +99,7 @@ export function AiImageWorkbench() {
       }
 
       setImageUrl(data.imageUrl);
+      setPreviewUrl(data.previewUrl || data.imageUrl);
       setDownloadUrl(data.downloadUrl || data.imageUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "生成失败，请稍后重试。");
@@ -261,7 +263,7 @@ export function AiImageWorkbench() {
               </div>
               <div className="overflow-hidden rounded-2xl bg-black">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={imageUrl} alt="AI 生成结果" className="max-h-[620px] w-full object-contain" />
+                <img src={previewUrl || imageUrl} alt="AI 生成结果" className="max-h-[620px] w-full object-contain" />
               </div>
             </section>
           )}
