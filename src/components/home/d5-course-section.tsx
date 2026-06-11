@@ -5,10 +5,10 @@ import { ResourceCard } from "@/components/shared/resource-card";
 
 export function D5CourseSection() {
   return (
-    <section id="d5-courses" className="scroll-mt-28 bg-white py-16">
+    <section id="d5-courses" className="scroll-mt-28 bg-white py-10">
       <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
         {/* 标题栏 */}
-        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div className="flex items-start gap-4">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-cyan-100 to-white text-cyan-700 shadow-sm ring-1 ring-cyan-200/50">
               <Play className="h-5 w-5" fill="currentColor" />
@@ -32,7 +32,7 @@ export function D5CourseSection() {
         </div>
 
         {/* 卡片网格 - 4列 */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {d5CourseItems.map((item) => (
             <ResourceCard key={item.title} item={item} />
           ))}

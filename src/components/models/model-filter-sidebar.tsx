@@ -10,10 +10,12 @@ export function ModelFilterSidebar({
   activeSlug,
   categories,
   basePath = "/models",
+  modelType = "su",
 }: {
   activeSlug?: string;
   categories: ModelCategory[];
   basePath?: string;
+  modelType?: "su" | "max";
 }) {
   const [expanded, setExpanded] = useState<Set<string>>(
     new Set(categories.filter((c) => c.children).map((c) => c.slug))
@@ -56,6 +58,7 @@ export function ModelFilterSidebar({
               onToggle={() => toggle(cat.slug)}
               depth={0}
               basePath={basePath}
+              modelType={modelType}
             />
           ))}
         </nav>
@@ -72,6 +75,7 @@ function CategoryItem({
   onToggle,
   depth,
   basePath,
+  modelType,
 }: {
   category: ModelCategory;
   expanded: boolean;
@@ -80,6 +84,7 @@ function CategoryItem({
   onToggle: () => void;
   depth: number;
   basePath: string;
+  modelType: "su" | "max";
 }) {
   const hasChildren = category.children && category.children.length > 0;
   const childActive = hasChildren && category.children!.some(
@@ -99,7 +104,7 @@ function CategoryItem({
         style={{ paddingLeft: `${16 + depth * 16}px` }}
       >
         <Link
-          href={`${basePath}${category.slug === "all" ? "" : `?category=${category.slug}`}`}
+          href={`${basePath}?type=${modelType}${category.slug === "all" ? "" : `&category=${category.slug}`}`}
           className="flex flex-1 items-center gap-2 min-w-0"
         >
           {depth === 0 ? (
@@ -109,7 +114,6 @@ function CategoryItem({
           )}
           <span className="text-sm truncate">{category.name}</span>
         </Link>
-        <span className="text-xs text-slate-400 shrink-0">{category.count}</span>
         {hasChildren && (
           <button
             onClick={(e) => {
@@ -141,6 +145,7 @@ function CategoryItem({
               onToggle={() => {}}
               depth={depth + 1}
               basePath={basePath}
+              modelType={modelType}
             />
           ))}
         </div>

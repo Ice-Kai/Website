@@ -5,10 +5,10 @@ import { ResourceCard } from "@/components/shared/resource-card";
 
 export function SuModelSection() {
   return (
-    <section id="su-models" className="scroll-mt-28 bg-slate-50/50 py-16">
+    <section id="su-models" className="scroll-mt-28 bg-slate-50/50 py-10">
       <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
         {/* 标题栏 */}
-        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div className="flex items-start gap-4">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-amber-100 to-white text-amber-700 shadow-sm ring-1 ring-amber-200/50">
               <Box className="h-5 w-5" />
@@ -31,7 +31,7 @@ export function SuModelSection() {
         </div>
 
         {/* 卡片网格 */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {suModelItems.map((item) => (
             <ResourceCard key={item.title} item={item} />
           ))}

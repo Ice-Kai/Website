@@ -7,7 +7,8 @@ import { D5CourseSection } from "@/components/home/d5-course-section";
 import { MaterialSection } from "@/components/home/material-section";
 import { D5ModelSection } from "@/components/home/d5-model-section";
 import { SoftwareSection } from "@/components/home/software-section";
-import { MemberSection } from "@/components/home/member-section";
+import { AiImageSection } from "@/components/home/ai-image-section";
+import { TextCaseSection } from "@/components/home/text-case-section";
 import { FriendLinks } from "@/components/home/friend-links";
 import { BackToTop } from "@/components/shared/back-to-top";
 
@@ -23,7 +24,8 @@ export default function Home() {
         <MaterialSection />
         <D5ModelSection />
         <SoftwareSection />
-        <MemberSection />
+        <TextCaseSection />
+        <AiImageSection />
         <FriendLinks />
       </main>
       <SiteFooter />

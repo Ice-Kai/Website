@@ -42,6 +42,39 @@ select {
   font: inherit;
 }
 
+html[data-theme="dark"] body {
+  background: #07111f;
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] header,
+html[data-theme="dark"] nav,
+html[data-theme="dark"] footer,
+html[data-theme="dark"] section.bg-white,
+html[data-theme="dark"] .bg-white {
+  background-color: rgba(15, 23, 42, 0.96) !important;
+  border-color: rgba(71, 85, 105, 0.7) !important;
+}
+
+html[data-theme="dark"] .bg-slate-50,
+html[data-theme="dark"] .bg-slate-50\/50,
+html[data-theme="dark"] .bg-slate-50\/70 {
+  background-color: rgba(15, 23, 42, 0.88) !important;
+}
+
+html[data-theme="dark"] .text-slate-950,
+html[data-theme="dark"] .text-slate-900,
+html[data-theme="dark"] .text-slate-800,
+html[data-theme="dark"] .text-slate-700 {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .text-slate-600,
+html[data-theme="dark"] .text-slate-500,
+html[data-theme="dark"] .text-slate-400 {
+  color: #cbd5e1 !important;
+}
+
 /* ── Admin 通用样式 ── */
 
 .input {
@@ -138,4 +171,16 @@ select.input {
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 select {
   font: inherit;
+}
+
+@keyframes noticeTicker {
+  0%, 18% { transform: translateY(0); }
+  25%, 43% { transform: translateY(-36px); }
+  50%, 68% { transform: translateY(-72px); }
+  75%, 93% { transform: translateY(-108px); }
+  100% { transform: translateY(-144px); }
+}
+
+.notice-ticker-track {
+  animation: noticeTicker 12s ease-in-out infinite;
 }

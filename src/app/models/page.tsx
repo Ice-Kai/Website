@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { ArrowLeft, Search, SlidersHorizontal, Grid3X3 } from "lucide-react";
+import type { ReactNode } from "react";
+import { ArrowLeft, Search, SlidersHorizontal, Grid3X3, Box, Cuboid } from "lucide-react";
 import { ModelFilterSidebar } from "@/components/models/model-filter-sidebar";
 import { ResourceCard } from "@/components/shared/resource-card";
 import { getContentItems } from "@/lib/db";
@@ -9,17 +10,23 @@ import { modelCategories } from "@/lib/site-data";
 export default async function ModelsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; sort?: string; q?: string }>;
+  searchParams: Promise<{ category?: string; sort?: string; q?: string; type?: string }>;
 }) {
   const params = await searchParams;
+  const activeType = params.type === "max" ? "max" : "su";
   const activeCategory = params.category || "all";
   const sortBy = params.sort || "newest";
   const query = params.q || "";
+  const visibleCategories =
+    activeType === "max"
+      ? modelCategories.filter((category) => category.slug === "all" || category.slug === "max-model")
+      : modelCategories.filter((category) => category.slug !== "max-model");
+  const queryCategory = activeType === "max" && activeCategory === "all" ? "max-model" : activeCategory;
 
   // 🔌 从数据库读取真实数据
   const items = await getContentItems({
     type: ["MODEL"],
-    category: activeCategory !== "all" ? activeCategory : undefined,
+    category: queryCategory !== "all" ? queryCategory : undefined,
     sort: sortBy as "newest" | "popular",
     query: query || undefined,
   });
@@ -46,22 +53,36 @@ export default async function ModelsPage({
           </Link>
           <span className="text-slate-300 shrink-0">/</span>
           <h1 className="text-base font-black text-slate-900 truncate">
-            SU模型{activeCategory !== "all" ? ` · ${activeCategoryName}` : ""}
+            {activeType === "max" ? "MAX模型" : "SU模型"}{activeCategory !== "all" ? ` · ${activeCategoryName}` : ""}
           </h1>
-          <span className="ml-auto text-sm font-semibold text-slate-400 shrink-0">
-            共 {items.length} 个模型 {items.length > 0 && "(数据库实时)"}
-          </span>
         </div>
       </header>
 
       <div className="mx-auto flex w-[min(1500px,calc(100vw-28px))] gap-6 py-6">
         {/* 左侧筛选侧边栏 */}
         <Suspense fallback={null}>
-          <ModelFilterSidebar activeSlug={activeCategory} categories={modelCategories} basePath="/models" />
+          <ModelFilterSidebar activeSlug={activeCategory} categories={visibleCategories} basePath="/models" modelType={activeType} />
         </Suspense>
 
         {/* 右侧主内容 */}
         <div className="flex-1 min-w-0">
+          <div className="mb-4 grid gap-3 sm:grid-cols-2">
+            <ModelTypeTab
+              href="/models?type=su"
+              active={activeType === "su"}
+              icon={<Box className="h-5 w-5" />}
+              title="SU模型"
+              description="建筑、工装、家装、园林和 D5 模型"
+            />
+            <ModelTypeTab
+              href="/models?type=max&category=max-model"
+              active={activeType === "max"}
+              icon={<Cuboid className="h-5 w-5" />}
+              title="MAX模型"
+              description="室内、建筑、景观 3ds Max 模型"
+            />
+          </div>
+
           {/* 工具栏 */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
             {/* 搜索 */}
@@ -73,18 +94,19 @@ export default async function ModelsPage({
                 placeholder="搜索模型名称、描述…"
                 className="w-full bg-transparent text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400"
               />
+              <input type="hidden" name="type" value={activeType} />
               <input type="hidden" name="category" value={activeCategory} />
             </form>
 
             {/* 排序 */}
             <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white p-1">
-              <SortButton href={`/models?category=${activeCategory}&sort=newest`} active={sortBy === "newest"}>
+              <SortButton href={`/models?type=${activeType}&category=${activeCategory}&sort=newest`} active={sortBy === "newest"}>
                 最新
               </SortButton>
-              <SortButton href={`/models?category=${activeCategory}&sort=popular`} active={sortBy === "popular"}>
+              <SortButton href={`/models?type=${activeType}&category=${activeCategory}&sort=popular`} active={sortBy === "popular"}>
                 最热
               </SortButton>
-              <SortButton href={`/models?category=${activeCategory}&sort=downloads`} active={sortBy === "downloads"}>
+              <SortButton href={`/models?type=${activeType}&category=${activeCategory}&sort=downloads`} active={sortBy === "downloads"}>
                 下载
               </SortButton>
             </div>
@@ -116,14 +138,7 @@ export default async function ModelsPage({
             </div>
           )}
 
-          {/* 底部分页提示 */}
-          {items.length > 0 && (
-            <div className="mt-8 flex items-center justify-center gap-2 text-sm font-semibold text-slate-400">
-              <span className="h-px flex-1 bg-slate-200" />
-              <span>显示 {items.length} 个结果</span>
-              <span className="h-px flex-1 bg-slate-200" />
-            </div>
-          )}
+          <div className="mt-8 h-px bg-slate-200" />
         </div>
       </div>
     </div>
@@ -137,7 +152,7 @@ function SortButton({
 }: {
   href: string;
   active: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <Link
@@ -149,6 +164,43 @@ function SortButton({
       }`}
     >
       {children}
+    </Link>
+  );
+}
+
+function ModelTypeTab({
+  href,
+  active,
+  icon,
+  title,
+  description,
+}: {
+  href: string;
+  active: boolean;
+  icon: ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`group flex items-center gap-4 rounded-2xl border p-4 transition-all ${
+        active
+          ? "border-cyan-300 bg-cyan-50 text-cyan-800 shadow-sm"
+          : "border-slate-200 bg-white text-slate-600 hover:border-cyan-200 hover:bg-slate-50"
+      }`}
+    >
+      <span
+        className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${
+          active ? "bg-cyan-500 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-cyan-100 group-hover:text-cyan-700"
+        }`}
+      >
+        {icon}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-base font-black">{title}</span>
+        <span className="mt-0.5 block truncate text-xs font-semibold opacity-75">{description}</span>
+      </span>
     </Link>
   );
 }

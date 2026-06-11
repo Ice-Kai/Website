@@ -15,7 +15,7 @@ const d5ModelItems: ResourceItem[] = [
     title: "D5含SU模型-汉代乐器摆件",
     summary: "汉代风格乐器摆件模型，含SU源文件和D5材质。",
     category: "D5模型 / D5家具", action: "下载", date: "2023-07-23", views: "1.2K",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=82",
+    image: "https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=800&q=82",
     href: "/models?category=d5-model", meta: "SU+D5A",
   },
   {
@@ -36,9 +36,9 @@ const d5ModelItems: ResourceItem[] = [
 
 export function D5ModelSection() {
   return (
-    <section id="d5-models" className="scroll-mt-28 bg-slate-50/50 py-16">
+    <section id="d5-models" className="scroll-mt-28 bg-slate-50/50 py-10">
       <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
-        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div className="flex items-start gap-4">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-100 to-white text-teal-700 shadow-sm ring-1 ring-teal-200/50">
               <Box className="h-5 w-5" />
@@ -59,7 +59,7 @@ export function D5ModelSection() {
             <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {d5ModelItems.map((item) => (
             <ResourceCard key={item.title} item={item} />
           ))}

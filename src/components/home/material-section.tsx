@@ -43,9 +43,9 @@ const materialItems: ResourceItem[] = [
 
 export function MaterialSection() {
   return (
-    <section id="materials" className="scroll-mt-28 bg-white py-16">
+    <section id="materials" className="scroll-mt-28 bg-white py-10">
       <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
-        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div className="flex items-start gap-4">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-100 to-white text-emerald-700 shadow-sm ring-1 ring-emerald-200/50">
               <ImageIcon className="h-5 w-5" />
@@ -66,7 +66,7 @@ export function MaterialSection() {
             <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {materialItems.map((item) => (
             <ResourceCard key={item.title} item={item} />
           ))}

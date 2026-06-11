@@ -10,7 +10,8 @@ export function SiteFooter() {
           <p>专注于建筑、景观、室内设计的资源与学习平台。</p>
         </div>
         <div className="flex flex-wrap items-center gap-6">
-          <Link href="/news" className="text-slate-500 transition-colors hover:text-cyan-600 font-semibold">薛大大新闻</Link>
+          <Link href="/official-account" className="text-slate-500 transition-colors hover:text-cyan-600 font-semibold">公众号链接</Link>
+          <Link href="/ai-image" className="text-slate-500 transition-colors hover:text-cyan-600 font-semibold">AI生图</Link>
           <Link href="/sitemap.xml" className="text-slate-500 transition-colors hover:text-cyan-600 font-semibold flex items-center gap-1">
             <MapPin className="h-3.5 w-3.5" />网站地图
           </Link>

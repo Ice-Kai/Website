@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { Search, User, Menu, Bookmark, History, MessageCircle, Users, Bell } from "lucide-react";
+import { Search, User, Menu, Bookmark, History, MessageCircle, Users, Bell, Download } from "lucide-react";
 import { navItems } from "@/lib/site-data";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 const userActions = [
   { icon: Bookmark, label: "收藏", href: "/favorites" },
+  { icon: Download, label: "下载记录", href: "/downloads" },
   { icon: History, label: "记录", href: "/history" },
   { icon: MessageCircle, label: "客服", href: "#chat" },
   { icon: Users, label: "社群", href: "/community" },
@@ -13,7 +15,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/95 backdrop-blur-2xl transition-all duration-300">
       {/* Top bar: logo + search + login */}
-      <div className="mx-auto flex min-h-[56px] w-[min(1500px,calc(100vw-28px))] items-center gap-4">
+      <div className="mx-auto flex min-h-[52px] w-[min(1680px,calc(100vw-20px))] items-center gap-4">
         <Link href="/" className="flex shrink-0 items-center gap-2.5 group">
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-slate-800 to-slate-950 text-base font-black text-white shadow-sm transition-transform group-hover:scale-105">
             薛
@@ -35,6 +37,7 @@ export function SiteHeader() {
 
         {/* User actions + Login */}
         <div className="ml-auto flex items-center gap-0.5">
+          <ThemeToggle />
           {/* 动态 */}
           <Link
             href="/activity"
@@ -79,12 +82,12 @@ export function SiteHeader() {
 
       {/* Bottom nav bar - matches xuedda.com */}
       <nav className="border-t border-slate-100 bg-white/80">
-        <div className="mx-auto flex w-[min(1500px,calc(100vw-28px))] items-center gap-0.5 overflow-x-auto scrollbar-hide">
+        <div className="mx-auto flex w-[min(1680px,calc(100vw-20px))] items-center justify-start gap-1 overflow-x-auto scrollbar-hide md:justify-center">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className={`shrink-0 px-4 py-3 text-sm font-bold transition-all duration-200 hover:text-cyan-600 ${
+              className={`shrink-0 px-5 py-2.5 text-sm font-bold transition-all duration-200 hover:text-cyan-600 ${
                 item.href === "/" ? "text-cyan-600" : "text-slate-600"
               }`}
             >
