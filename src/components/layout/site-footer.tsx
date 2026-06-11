@@ -3,8 +3,8 @@ import { ShieldCheck, MapPin } from "lucide-react";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-slate-200/60 bg-slate-50 py-12">
-      <div className="mx-auto flex w-[min(1500px,calc(100vw-28px))] flex-col gap-6 text-sm font-medium text-slate-500 md:flex-row md:items-center md:justify-between">
+    <footer className="relative mt-4 border-t border-white/50 bg-white/60 py-12 backdrop-blur-xl">
+      <div className="mx-auto flex w-[min(1760px,calc(100vw-32px))] flex-col gap-6 text-sm font-medium text-slate-500 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-slate-900 font-bold text-base mb-1">薛大大设计网 / 学与成设计网</p>
           <p>专注于建筑、景观、室内设计的资源与学习平台。</p>
@@ -24,7 +24,7 @@ export function SiteFooter() {
           </Link>
         </div>
       </div>
-      <div className="mx-auto mt-6 w-[min(1500px,calc(100vw-28px))] border-t border-slate-100 pt-4 text-center text-xs text-slate-400">
+      <div className="mx-auto mt-6 w-[min(1760px,calc(100vw-32px))] border-t border-slate-100 pt-4 text-center text-xs text-slate-400">
         <p>学与成设计网 © xuedda.com &nbsp;|&nbsp; Powered by Next.js</p>
       </div>
     </footer>

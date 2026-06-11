@@ -63,7 +63,7 @@ export default async function MaterialsPage({
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto flex h-14 w-[min(1500px,calc(100vw-28px))] items-center gap-4">
+        <div className="mx-auto flex h-14 w-[min(1760px,calc(100vw-32px))] items-center gap-4">
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors shrink-0"
@@ -81,7 +81,7 @@ export default async function MaterialsPage({
         </div>
       </header>
 
-      <div className="mx-auto flex w-[min(1500px,calc(100vw-28px))] gap-6 py-6">
+      <div className="mx-auto flex w-[min(1760px,calc(100vw-32px))] gap-6 py-6">
         <Suspense fallback={null}>
           <ModelFilterSidebar activeSlug={activeCategory} categories={materialCategories} basePath="/materials" />
         </Suspense>

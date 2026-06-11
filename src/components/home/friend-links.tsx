@@ -9,7 +9,7 @@ const friendLinks = [
 export function FriendLinks() {
   return (
     <section className="border-t border-slate-200/60 bg-slate-50/80 py-10">
-      <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
+      <div className="mx-auto w-[min(1760px,calc(100vw-32px))]">
         <div className="flex flex-wrap items-center justify-center gap-6">
           <span className="text-sm font-bold text-slate-400">友情链接</span>
           {friendLinks.map((link) => (

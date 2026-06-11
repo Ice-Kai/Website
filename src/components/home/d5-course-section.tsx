@@ -5,12 +5,12 @@ import { ResourceCard } from "@/components/shared/resource-card";
 
 export function D5CourseSection() {
   return (
-    <section id="d5-courses" className="scroll-mt-28 bg-white py-10">
-      <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
+    <section id="d5-courses" className="scroll-mt-28 py-12">
+      <div className="mx-auto w-[min(1760px,calc(100vw-32px))]">
         {/* 标题栏 */}
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div className="flex items-start gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-cyan-100 to-white text-cyan-700 shadow-sm ring-1 ring-cyan-200/50">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-gradient-to-br from-cyan-100 to-white text-cyan-700 shadow-sm ring-1 ring-cyan-200/50">
               <Play className="h-5 w-5" fill="currentColor" />
             </span>
             <div>
@@ -24,7 +24,7 @@ export function D5CourseSection() {
           <Link
             href="https://www.xuedda.com/index/download/index/category_id/336.html"
             target="_blank"
-            className="group inline-flex h-10 items-center gap-2 rounded-full bg-slate-50 pl-4 pr-3 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-slate-200/60 transition-all hover:bg-cyan-50 hover:text-cyan-700 hover:shadow"
+            className="group inline-flex h-10 items-center gap-2 rounded-md bg-slate-50 pl-4 pr-3 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-slate-200/60 transition-all hover:bg-cyan-50 hover:text-cyan-700 hover:shadow"
           >
             查看全部教程
             <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

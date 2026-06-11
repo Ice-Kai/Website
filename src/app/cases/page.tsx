@@ -78,7 +78,7 @@ export default function CasesPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto flex h-14 w-[min(1500px,calc(100vw-28px))] items-center gap-4">
+        <div className="mx-auto flex h-14 w-[min(1760px,calc(100vw-32px))] items-center gap-4">
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors shrink-0">
             <ArrowLeft className="h-4 w-4" />首页
           </Link>
@@ -87,7 +87,7 @@ export default function CasesPage() {
         </div>
       </header>
 
-      <div className="mx-auto w-[min(1500px,calc(100vw-28px))] py-10">
+      <div className="mx-auto w-[min(1760px,calc(100vw-32px))] py-10">
         <section className="text-center max-w-3xl mx-auto mb-12">
           <span className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-1.5 text-xs font-bold text-amber-700 ring-1 ring-amber-200/50">
             <Award className="h-3.5 w-3.5" />

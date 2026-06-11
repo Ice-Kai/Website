@@ -14,7 +14,7 @@ import { BackToTop } from "@/components/shared/back-to-top";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-cyan-200 selection:text-cyan-900 font-sans">
+    <div className="min-h-screen text-slate-900 selection:bg-cyan-200 selection:text-cyan-900 font-sans">
       <SiteHeader />
       <main>
         <HeroSection />

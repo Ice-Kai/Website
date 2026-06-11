@@ -36,11 +36,11 @@ const d5ModelItems: ResourceItem[] = [
 
 export function D5ModelSection() {
   return (
-    <section id="d5-models" className="scroll-mt-28 bg-slate-50/50 py-10">
-      <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
+    <section id="d5-models" className="scroll-mt-28 py-12">
+      <div className="mx-auto w-[min(1760px,calc(100vw-32px))]">
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div className="flex items-start gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-100 to-white text-teal-700 shadow-sm ring-1 ring-teal-200/50">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-gradient-to-br from-teal-100 to-white text-teal-700 shadow-sm ring-1 ring-teal-200/50">
               <Box className="h-5 w-5" />
             </span>
             <div>
@@ -53,7 +53,7 @@ export function D5ModelSection() {
           </div>
           <Link
             href="/models?category=d5-model"
-            className="group inline-flex h-10 items-center gap-2 rounded-full bg-white pl-4 pr-3 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-slate-200/60 transition-all hover:bg-teal-50 hover:text-teal-700 hover:shadow"
+            className="group inline-flex h-10 items-center gap-2 rounded-md bg-white pl-4 pr-3 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-slate-200/60 transition-all hover:bg-teal-50 hover:text-teal-700 hover:shadow"
           >
             更多D5模型
             <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

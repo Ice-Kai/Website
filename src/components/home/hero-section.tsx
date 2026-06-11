@@ -1,107 +1,135 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Play, Sparkles } from "lucide-react";
-import { heroFeatures, heroSlides } from "@/lib/site-data";
-
-const intervalMs = 5200;
+import { Sparkles, ArrowRight, Play, Flame, Zap } from "lucide-react";
+import { heroSlides, heroFeatures, hotRecommendations } from "@/lib/site-data";
 
 export function HeroSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeSlide = heroSlides[activeIndex];
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % heroSlides.length);
-    }, intervalMs);
-
-    return () => window.clearInterval(timer);
-  }, []);
+  const main = heroSlides[0];
 
   return (
-    <section className="bg-gradient-to-b from-slate-50 to-white px-0 pt-3 pb-3">
-      <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
-        <div className="group relative min-h-[420px] overflow-hidden rounded-[24px] bg-slate-950 text-white shadow-[0_18px_55px_rgba(15,23,42,0.16)] ring-1 ring-slate-900/5 sm:min-h-[500px]">
-          {heroSlides.map((slide, index) => (
-            <Image
-              key={slide.title}
-              src={slide.image}
-              alt={slide.title}
-              fill
-              priority={index === 0}
-              sizes="(max-width: 1600px) 100vw, 1500px"
-              className={`object-cover transition duration-1000 ease-out ${
-                activeIndex === index ? "scale-100 opacity-100" : "scale-105 opacity-0"
-              }`}
-            />
-          ))}
+    <section className="bg-gradient-to-b from-slate-50 to-white pt-4 pb-6">
+      <div className="mx-auto grid w-[min(1760px,calc(100vw-32px))] items-stretch gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        {/* ── 左侧主横幅 ── */}
+        <Link
+          href={main.href}
+          className="group relative min-h-[420px] overflow-hidden rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-200/50 ring-1 ring-slate-900/5 sm:h-[480px]"
+        >
+          <Image
+            src={main.image}
+            alt={main.title}
+            fill
+            priority
+            sizes="(max-width: 1280px) 100vw, 70vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+          {/* 暗色渐变蒙层 */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
 
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.86)_0%,rgba(2,6,23,0.62)_38%,rgba(2,6,23,0.08)_100%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(34,211,238,0.22),transparent_32%)]" />
-
-          <div className="relative z-10 flex min-h-[420px] flex-col justify-end p-7 sm:min-h-[500px] sm:p-12 lg:p-14">
-            <div className="max-w-3xl">
-              <span className="inline-flex items-center gap-2 rounded-full bg-cyan-300 px-4 py-1.5 text-xs font-black text-slate-950 shadow-sm">
+          {/* 内容 */}
+          <div className="absolute inset-x-0 bottom-0 p-8 sm:p-12 lg:p-14">
+            <div className="transform transition-transform duration-500 group-hover:-translate-y-1">
+              {/* 顶部徽标 */}
+              <span className="inline-flex items-center gap-2 rounded-full bg-cyan-400/90 backdrop-blur-sm px-4 py-1.5 text-xs font-black text-slate-950 shadow-sm">
                 <Sparkles className="h-3.5 w-3.5" />
                 薛大大推荐
               </span>
 
-              <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-                {activeSlide.title}
+              {/* 标题 */}
+              <h1 className="mt-5 max-w-2xl text-3xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl text-white">
+                {main.title}
               </h1>
-              <p className="mt-4 text-lg font-black tracking-wide text-cyan-200 sm:text-2xl">
-                {activeSlide.subtitle}
+              <p className="mt-3 text-xl sm:text-2xl font-black text-cyan-300 tracking-wide">
+                {main.subtitle}
               </p>
 
+              {/* 按钮组 */}
               <div className="mt-7 flex flex-wrap items-center gap-3">
-                <Link
-                  href={activeSlide.href}
-                  className="inline-flex h-11 items-center gap-2 rounded-full bg-cyan-400 pl-6 pr-5 text-sm font-black text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:-translate-y-0.5 hover:bg-cyan-300"
-                >
+                <span className="inline-flex h-11 items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 pl-6 pr-5 text-sm font-bold text-white shadow-lg shadow-cyan-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/30 hover:scale-105">
                   <Play className="h-4 w-4" fill="currentColor" />
-                  立即查看
-                </Link>
-                <Link
-                  href={activeSlide.href}
-                  className="inline-flex h-11 items-center gap-2 rounded-full bg-white/12 pl-5 pr-4 text-sm font-bold text-white ring-1 ring-inset ring-white/25 backdrop-blur-md transition hover:bg-white/20"
-                >
-                  进入栏目
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+                  立即学习
+                </span>
+                <span className="inline-flex h-11 items-center gap-2 rounded-full bg-white/15 backdrop-blur-md pl-5 pr-4 text-sm font-bold text-white ring-1 ring-inset ring-white/25 transition-all duration-300 hover:bg-white/25 group-hover:pr-6">
+                  查看教程
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
               </div>
 
-              <div className="mt-7 flex flex-wrap items-center gap-2.5">
-                {heroFeatures.map((feature) => (
+              {/* 特性标签 */}
+              <div className="mt-7 flex flex-wrap items-center gap-3">
+                {heroFeatures.map((f) => (
                   <span
-                    key={feature.label}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-bold text-white/90 ring-1 ring-inset ring-white/15 backdrop-blur-sm"
+                    key={f.label}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-sm px-3.5 py-1.5 text-xs font-bold text-white/90 ring-1 ring-inset ring-white/15"
                   >
-                    <span>{feature.icon}</span>
-                    {feature.label}
+                    <span>{f.icon}</span>
+                    {f.label}
                   </span>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2 rounded-full bg-slate-950/28 px-3 py-2 ring-1 ring-white/15 backdrop-blur-md">
-            {heroSlides.map((slide, index) => (
-              <button
-                key={slide.title}
-                type="button"
-                onClick={() => setActiveIndex(index)}
-                className={`h-2.5 rounded-full transition-all ${
-                  activeIndex === index ? "w-8 bg-cyan-300" : "w-2.5 bg-white/55 hover:bg-white"
-                }`}
-                aria-label={`切换到${slide.title}`}
-              />
-            ))}
+          {/* 内边框 */}
+          <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10 pointer-events-none" />
+        </Link>
+
+        {/* ── 右侧热门推荐侧边栏 ── */}
+        <aside className="hidden h-[480px] flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-200/45 xl:flex">
+          <div className="mb-3 flex h-8 shrink-0 items-center gap-2 px-1">
+            <Flame className="h-4 w-4 text-orange-500" fill="currentColor" />
+            <span className="text-sm font-black text-slate-800">热门推荐</span>
           </div>
 
-          <div className="pointer-events-none absolute inset-0 rounded-[24px] ring-1 ring-inset ring-white/10" />
-        </div>
+          <div className="grid flex-1 gap-3">
+            {hotRecommendations.map((item, index) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`group flex min-h-0 items-center gap-3 rounded-xl border px-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
+                  index === 0
+                    ? "border-cyan-200 bg-gradient-to-r from-cyan-50 to-white"
+                    : index === 1
+                      ? "border-amber-200 bg-gradient-to-r from-amber-50 to-white"
+                      : "border-slate-200 bg-slate-50/70 hover:border-cyan-200 hover:bg-white"
+                }`}
+              >
+                <span
+                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-lg text-sm font-black ${
+                    index === 0
+                      ? "bg-cyan-500 text-white"
+                      : index === 1
+                        ? "bg-amber-500 text-white"
+                        : index === 2
+                          ? "bg-blue-100 text-blue-700"
+                          : index === 3
+                            ? "bg-violet-100 text-violet-700"
+                            : "bg-rose-100 text-rose-700"
+                  }`}
+                >
+                  {index === 0 ? <Zap className="h-5 w-5" /> : index + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="line-clamp-2 text-sm font-bold leading-snug text-slate-800">
+                    {item.label}
+                  </p>
+                </div>
+                {item.badge && (
+                  <span
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black ${
+                      item.badge === "HOT"
+                        ? "bg-red-500 text-white"
+                        : "bg-green-500 text-white"
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+                <ArrowRight className="h-3.5 w-3.5 shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-cyan-500" />
+              </Link>
+            ))}
+          </div>
+        </aside>
       </div>
     </section>
   );

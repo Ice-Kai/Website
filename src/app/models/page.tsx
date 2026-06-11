@@ -19,8 +19,8 @@ export default async function ModelsPage({
   const query = params.q || "";
   const visibleCategories =
     activeType === "max"
-      ? modelCategories.filter((category) => category.slug === "all" || category.slug === "max-model")
-      : modelCategories.filter((category) => category.slug !== "max-model");
+      ? modelCategories.filter((category) => category.slug === "all" || category.slug.startsWith("max-"))
+      : modelCategories.filter((category) => category.slug === "all" || !category.slug.startsWith("max-"));
   const queryCategory = activeType === "max" && activeCategory === "all" ? "max-model" : activeCategory;
 
   // 🔌 从数据库读取真实数据
@@ -43,7 +43,7 @@ export default async function ModelsPage({
     <div className="min-h-screen bg-slate-50">
       {/* 顶部条 */}
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto flex h-14 w-[min(1500px,calc(100vw-28px))] items-center gap-4">
+        <div className="mx-auto flex h-14 w-[min(1760px,calc(100vw-32px))] items-center gap-4">
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors shrink-0"
@@ -58,7 +58,7 @@ export default async function ModelsPage({
         </div>
       </header>
 
-      <div className="mx-auto flex w-[min(1500px,calc(100vw-28px))] gap-6 py-6">
+      <div className="mx-auto flex w-[min(1760px,calc(100vw-32px))] gap-6 py-6">
         {/* 左侧筛选侧边栏 */}
         <Suspense fallback={null}>
           <ModelFilterSidebar activeSlug={activeCategory} categories={visibleCategories} basePath="/models" modelType={activeType} />

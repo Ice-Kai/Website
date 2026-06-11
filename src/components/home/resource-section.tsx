@@ -20,7 +20,7 @@ export function ResourceSection({ sectionIndex }: { sectionIndex: number }) {
       <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
         <div className="mb-8 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div className="flex items-start gap-5">
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-cyan-100 to-white text-cyan-700 shadow-sm ring-1 ring-cyan-200/50">
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-md bg-gradient-to-br from-cyan-100 to-white text-cyan-700 shadow-sm ring-1 ring-cyan-200/50">
               <Icon className="h-6 w-6" />
             </span>
             <div>
@@ -32,7 +32,7 @@ export function ResourceSection({ sectionIndex }: { sectionIndex: number }) {
           <Link
             href={section.href}
             target="_blank"
-            className="group inline-flex h-10 items-center gap-2 rounded-full bg-white pl-4 pr-3 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-slate-200/60 transition-all hover:bg-slate-50 hover:text-cyan-700 hover:shadow"
+            className="group inline-flex h-10 items-center gap-2 rounded-md bg-white pl-4 pr-3 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-slate-200/60 transition-all hover:bg-slate-50 hover:text-cyan-700 hover:shadow"
           >
             查看更多
             <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

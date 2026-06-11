@@ -73,7 +73,7 @@ const softwareItems = [
 function BrandMark({ item }: { item: (typeof softwareItems)[number] }) {
   return (
     <span
-      className={`grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${item.tone} shadow-[0_8px_20px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/[0.05] transition duration-200 group-hover:-translate-y-0.5 group-hover:shadow-[0_12px_28px_rgba(15,23,42,0.13)]`}
+      className={`grid h-12 w-12 place-items-center rounded-md bg-gradient-to-br ${item.tone} shadow-[0_8px_20px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/[0.05] transition duration-200 group-hover:-translate-y-0.5 group-hover:shadow-[0_12px_28px_rgba(15,23,42,0.13)]`}
     >
       {item.iconUrl ? (
         <Image
@@ -86,7 +86,7 @@ function BrandMark({ item }: { item: (typeof softwareItems)[number] }) {
           unoptimized
         />
       ) : (
-        <span className="grid h-7 w-7 place-items-center rounded-lg bg-slate-950 text-[12px] font-black text-white">
+        <span className="grid h-7 w-7 place-items-center rounded-sm bg-slate-950 text-[12px] font-black text-white">
           {item.fallback}
         </span>
       )}
@@ -98,14 +98,14 @@ export function SoftwareStrip() {
   return (
     <>
       <aside className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
-        <div className="rounded-[24px] border border-slate-200/80 bg-white/88 p-2 shadow-[0_18px_50px_rgba(15,23,42,0.13)] backdrop-blur-xl">
+        <div className="rounded-md border border-slate-200/80 bg-white/88 p-2 shadow-[0_18px_50px_rgba(15,23,42,0.13)] backdrop-blur-xl">
           <p className="mb-2 px-1 text-center text-[11px] font-black tracking-wide text-slate-400">快捷</p>
           {softwareItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
               title={item.label}
-              className="group relative flex h-[58px] w-[58px] items-center justify-center rounded-2xl transition hover:bg-slate-50"
+              className="group relative flex h-[58px] w-[58px] items-center justify-center rounded-md transition hover:bg-slate-50"
             >
               <BrandMark item={item} />
               <span className="pointer-events-none absolute right-[68px] top-1/2 hidden -translate-y-1/2 whitespace-nowrap rounded-full bg-slate-950 px-3 py-1.5 text-xs font-black text-white opacity-0 shadow-lg transition group-hover:block group-hover:opacity-100">
@@ -117,7 +117,7 @@ export function SoftwareStrip() {
       </aside>
 
       <section className="bg-white py-2 xl:hidden">
-        <div className="mx-auto w-[min(1680px,calc(100vw-20px))]">
+        <div className="mx-auto w-[min(1880px,calc(100vw-32px))]">
           <div className="flex snap-x items-center gap-4 overflow-x-auto px-1 py-1 scrollbar-hide">
             {softwareItems.map((item) => (
               <Link

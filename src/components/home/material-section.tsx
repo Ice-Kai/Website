@@ -43,11 +43,11 @@ const materialItems: ResourceItem[] = [
 
 export function MaterialSection() {
   return (
-    <section id="materials" className="scroll-mt-28 bg-white py-10">
-      <div className="mx-auto w-[min(1500px,calc(100vw-28px))]">
+    <section id="materials" className="scroll-mt-28 bg-white/45 py-12 backdrop-blur-sm">
+      <div className="mx-auto w-[min(1760px,calc(100vw-32px))]">
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div className="flex items-start gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-100 to-white text-emerald-700 shadow-sm ring-1 ring-emerald-200/50">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-gradient-to-br from-emerald-100 to-white text-emerald-700 shadow-sm ring-1 ring-emerald-200/50">
               <ImageIcon className="h-5 w-5" />
             </span>
             <div>
@@ -60,13 +60,13 @@ export function MaterialSection() {
           </div>
           <Link
             href="/materials"
-            className="group inline-flex h-10 items-center gap-2 rounded-full bg-slate-50 pl-4 pr-3 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-slate-200/60 transition-all hover:bg-emerald-50 hover:text-emerald-700 hover:shadow"
+            className="group inline-flex h-10 items-center gap-2 rounded-md bg-slate-50 pl-4 pr-3 text-sm font-bold text-slate-600 shadow-sm ring-1 ring-slate-200/60 transition-all hover:bg-emerald-50 hover:text-emerald-700 hover:shadow"
           >
             更多贴图素材
             <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-5">
           {materialItems.map((item) => (
             <ResourceCard key={item.title} item={item} />
           ))}

@@ -62,7 +62,7 @@ export default function LightingPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <SiteHeader />
-      <main className="mx-auto w-[min(1500px,calc(100vw-28px))] py-8">
+      <main className="mx-auto w-[min(1760px,calc(100vw-32px))] py-8">
         <div className="flex items-center gap-3 mb-6">
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors">
             <ArrowLeft className="h-4 w-4" />首页

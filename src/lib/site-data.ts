@@ -119,7 +119,7 @@ export const heroFeatures = [
 export const hotRecommendations: HotRecommendation[] = [
   { label: "D5 全套渲染教程", href: "/courses", badge: "HOT" },
   { label: "SU 模型精选", href: "/models", badge: "NEW" },
-  { label: "MAX 模型栏目", href: "/models?category=max-model", badge: "NEW" },
+  { label: "MAX 模型栏目", href: "/models?type=max&category=max-model", badge: "NEW" },
   { label: "Layout 施工图教程", href: "/courses?tab=layout" },
   { label: "AI 生图 0.15 元/次", href: "/ai-image" },
 ];
@@ -127,7 +127,7 @@ export const hotRecommendations: HotRecommendation[] = [
 export const rollingNotices = [
   { label: "D5教程", text: "室内灯光全流程今日更新", href: "/courses" },
   { label: "今日上新素材", text: "PBR贴图、HDR环境陆续补齐", href: "/materials" },
-  { label: "MAX模型", text: "新增 3ds Max 模型独立分类", href: "/models?category=max-model" },
+  { label: "MAX模型", text: "新增 3ds Max 模型独立分类", href: "/models?type=max&category=max-model" },
   { label: "AI生图", text: "效果图灵感生成 0.15 元/次", href: "/ai-image" },
 ];
 
@@ -493,13 +493,52 @@ export const modelCategories: ModelCategory[] = [
   },
   {
     id: "max-model",
-    name: "MAX模型",
+    name: "全部MAX模型",
     slug: "max-model",
     count: 520,
+  },
+  {
+    id: "max-interior",
+    name: "室内MAX模型",
+    slug: "max-interior",
+    count: 210,
     children: [
-      { id: "max-interior", name: "室内MAX模型", slug: "max-interior", count: 210 },
-      { id: "max-architecture", name: "建筑MAX模型", slug: "max-architecture", count: 168 },
-      { id: "max-landscape", name: "景观MAX模型", slug: "max-landscape", count: 142 },
+      { id: "max-living", name: "客餐厅MAX", slug: "max-living", count: 72 },
+      { id: "max-bedroom", name: "卧室MAX", slug: "max-bedroom", count: 58 },
+      { id: "max-commercial-interior", name: "工装空间MAX", slug: "max-commercial-interior", count: 80 },
+    ],
+  },
+  {
+    id: "max-architecture",
+    name: "建筑MAX模型",
+    slug: "max-architecture",
+    count: 168,
+    children: [
+      { id: "max-residential-building", name: "住宅建筑MAX", slug: "max-residential-building", count: 64 },
+      { id: "max-commercial-building", name: "商业建筑MAX", slug: "max-commercial-building", count: 56 },
+      { id: "max-public-building", name: "公共建筑MAX", slug: "max-public-building", count: 48 },
+    ],
+  },
+  {
+    id: "max-landscape",
+    name: "景观MAX模型",
+    slug: "max-landscape",
+    count: 142,
+    children: [
+      { id: "max-garden", name: "庭院景观MAX", slug: "max-garden", count: 52 },
+      { id: "max-park", name: "公园广场MAX", slug: "max-park", count: 47 },
+      { id: "max-plants", name: "植物小品MAX", slug: "max-plants", count: 43 },
+    ],
+  },
+  {
+    id: "max-furniture",
+    name: "家具摆件MAX",
+    slug: "max-furniture",
+    count: 156,
+    children: [
+      { id: "max-sofa-chair", name: "沙发椅子MAX", slug: "max-sofa-chair", count: 62 },
+      { id: "max-table-cabinet", name: "桌柜组合MAX", slug: "max-table-cabinet", count: 51 },
+      { id: "max-decoration", name: "装饰摆件MAX", slug: "max-decoration", count: 43 },
     ],
   },
 ];

@@ -36,7 +36,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <SiteHeader />
-      <main className="mx-auto w-[min(1500px,calc(100vw-28px))] py-8">
+      <main className="mx-auto w-[min(1760px,calc(100vw-32px))] py-8">
         <Breadcrumb items={[{ label: "首页", href: "/" }, { label: `分类: ${slug}` }]} />
 
         <h1 className="mt-4 text-xl font-black text-slate-900">分类：{slug}</h1>

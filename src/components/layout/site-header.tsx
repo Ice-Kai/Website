@@ -13,11 +13,11 @@ const userActions = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/95 backdrop-blur-2xl transition-all duration-300">
+    <header className="sticky top-0 z-50 border-b border-white/40 bg-white/75 shadow-[0_4px_24px_-12px_rgba(15,23,42,0.18)] backdrop-blur-2xl transition-all duration-300 supports-[backdrop-filter]:bg-white/65">
       {/* Top bar: logo + search + login */}
-      <div className="mx-auto flex min-h-[52px] w-[min(1680px,calc(100vw-20px))] items-center gap-4">
+      <div className="mx-auto flex min-h-[52px] w-[min(1880px,calc(100vw-32px))] items-center gap-4">
         <Link href="/" className="flex shrink-0 items-center gap-2.5 group">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-slate-800 to-slate-950 text-base font-black text-white shadow-sm transition-transform group-hover:scale-105">
+          <span className="grid h-9 w-9 place-items-center rounded-md bg-gradient-to-br from-cyan-500 via-slate-800 to-slate-950 text-base font-black text-white shadow-md shadow-cyan-500/20 transition-transform group-hover:scale-105 group-hover:rotate-3">
             薛
           </span>
           <span className="hidden sm:block">
@@ -26,7 +26,7 @@ export function SiteHeader() {
         </Link>
 
         {/* Search */}
-        <form className="hidden h-9 flex-1 max-w-[420px] items-center gap-2 rounded-full border border-slate-200 bg-slate-50/60 px-4 transition-all duration-300 focus-within:border-cyan-400 focus-within:bg-white focus-within:ring-3 focus-within:ring-cyan-400/10 md:flex">
+        <form className="hidden h-9 flex-1 max-w-[420px] items-center gap-2 rounded-md border border-slate-200 bg-slate-50/60 px-4 transition-all duration-300 focus-within:border-cyan-400 focus-within:bg-white focus-within:ring-3 focus-within:ring-cyan-400/10 md:flex">
           <Search className="h-4 w-4 text-slate-400 shrink-0" />
           <input
             aria-label="搜索资源"
@@ -63,14 +63,14 @@ export function SiteHeader() {
           <span className="mx-1 h-5 w-px bg-slate-200 hidden sm:block" />
           <Link
             href="/login"
-            className="hidden sm:inline-flex h-9 items-center gap-1.5 rounded-full border border-slate-200 px-4 text-sm font-semibold text-slate-600 transition-all hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50"
+            className="hidden sm:inline-flex h-9 items-center gap-1.5 rounded-md border border-slate-200 px-4 text-sm font-semibold text-slate-600 transition-all hover:border-cyan-300 hover:text-cyan-700 hover:bg-cyan-50"
           >
             <User className="h-3.5 w-3.5" />
             登录
           </Link>
           <Link
             href="/register"
-            className="inline-flex h-9 items-center rounded-full bg-gradient-to-r from-cyan-600 to-blue-600 px-5 text-sm font-bold text-white shadow-sm transition-all hover:from-cyan-500 hover:to-blue-500 hover:shadow-md active:scale-95"
+            className="inline-flex h-9 items-center rounded-md bg-gradient-to-r from-cyan-600 to-blue-600 px-5 text-sm font-bold text-white shadow-sm transition-all hover:from-cyan-500 hover:to-blue-500 hover:shadow-md active:scale-95"
           >
             注册
           </Link>
@@ -81,14 +81,16 @@ export function SiteHeader() {
       </div>
 
       {/* Bottom nav bar - matches xuedda.com */}
-      <nav className="border-t border-slate-100 bg-white/80">
-        <div className="mx-auto flex w-[min(1680px,calc(100vw-20px))] items-center justify-start gap-1 overflow-x-auto scrollbar-hide md:justify-center">
+      <nav className="border-t border-slate-100/80 bg-white/55">
+        <div className="mx-auto flex w-[min(1880px,calc(100vw-32px))] items-center justify-start gap-1 overflow-x-auto scrollbar-hide py-1 md:justify-center">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className={`shrink-0 px-5 py-2.5 text-sm font-bold transition-all duration-200 hover:text-cyan-600 ${
-                item.href === "/" ? "text-cyan-600" : "text-slate-600"
+              className={`shrink-0 rounded-md px-5 py-2 text-sm font-bold transition-all duration-200 ${
+                item.href === "/"
+                  ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm shadow-cyan-600/25"
+                  : "text-slate-600 hover:bg-slate-100/80 hover:text-cyan-600"
               }`}
             >
               {item.label}
