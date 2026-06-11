@@ -10,6 +10,7 @@ const requestSchema = z.object({
   model: z.string().trim().max(100).optional(),
   quality: z.string().trim().max(32).optional(),
   style: z.string().trim().max(64).optional(),
+  sourceImage: z.string().startsWith("data:image/").max(6_000_000).optional(),
 });
 
 function getImageUrls(data: unknown): { imageUrl: string | null; downloadUrl: string | null } {
@@ -186,12 +187,19 @@ function buildUpstreamBody(input: z.infer<typeof requestSchema>, endpoint: strin
   const size = input.size ?? "1024x1024";
 
   if (endpoint.includes("/chat/completions")) {
+    const content = input.sourceImage
+      ? [
+          { type: "text", text: `${input.prompt}\n请根据上传图片进行修改，重点参考图片中的涂抹、画圈和文字标注。` },
+          { type: "image_url", image_url: { url: input.sourceImage } },
+        ]
+      : input.prompt;
+
     return {
       model,
       messages: [
         {
           role: "user",
-          content: input.prompt,
+          content,
         },
       ],
       size,
@@ -202,6 +210,7 @@ function buildUpstreamBody(input: z.infer<typeof requestSchema>, endpoint: strin
 
   return {
     prompt: input.prompt,
+    image: input.sourceImage || undefined,
     size,
     model,
     quality: input.quality || undefined,

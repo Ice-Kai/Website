@@ -13,6 +13,7 @@ import {
   Sparkles,
   Wand2,
 } from "lucide-react";
+import { ImageEditor } from "./image-editor";
 
 type GeneratedImage = {
   id: string;
@@ -73,6 +74,7 @@ export function AiImageWorkbench() {
   const [error, setError] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [elapsed, setElapsed] = useState(0);
+  const [sourceImage, setSourceImage] = useState<string | null>(null);
 
   const activeSizeLabel = useMemo(
     () => sizeOptions.find((option) => option.value === size)?.label ?? "16:9",
@@ -109,7 +111,7 @@ export function AiImageWorkbench() {
       const res = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, size }),
+        body: JSON.stringify({ prompt, size, sourceImage }),
       });
       const data = await res.json();
 
@@ -225,6 +227,7 @@ export function AiImageWorkbench() {
                 placeholder="例如：现代建筑效果图，玻璃幕墙，黄昏灯光，雨后街道，写实摄影质感..."
                 className="min-h-36 w-full resize-none rounded-xl border border-white/10 bg-black/20 p-3 text-sm font-semibold leading-6 text-white outline-none placeholder:text-white/30 focus:border-cyan-300/40"
               />
+              <ImageEditor onChange={setSourceImage} />
 
               <div className="mt-3 flex flex-wrap gap-2">
                 {promptChips.map((chip) => (
