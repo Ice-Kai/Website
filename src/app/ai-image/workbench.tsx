@@ -104,6 +104,25 @@ export function AiImageWorkbench() {
     }
   }
 
+  async function handleDownloadImage() {
+    if (!imageUrl) return;
+
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `belongstoai-image-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      window.open(imageUrl, "_blank", "noopener,noreferrer");
+    }
+  }
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#0d1117] text-white">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[176px] border-r border-white/8 bg-[#080b10] xl:block">
@@ -223,9 +242,19 @@ export function AiImageWorkbench() {
             <section className="mt-10 max-w-4xl rounded-3xl border border-white/8 bg-white/[0.045] p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <h2 className="text-sm font-black text-white">生成结果</h2>
-                <a href={imageUrl} target="_blank" rel="noreferrer" className="text-xs font-bold text-cyan-200 hover:text-cyan-100">
-                  打开原图
-                </a>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleDownloadImage}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-200 hover:text-cyan-100"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    下载图片
+                  </button>
+                  <a href={imageUrl} target="_blank" rel="noreferrer" className="text-xs font-bold text-cyan-200 hover:text-cyan-100">
+                    打开原图
+                  </a>
+                </div>
               </div>
               <div className="overflow-hidden rounded-2xl bg-black">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

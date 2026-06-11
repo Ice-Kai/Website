@@ -57,6 +57,72 @@ function getImageUrl(data: unknown): string | null {
     }
   }
 
+  return findImageInUnknown(data);
+}
+
+function findImageInUnknown(input: unknown, seen = new Set<unknown>()): string | null {
+  if (!input) return null;
+
+  if (typeof input === "string") {
+    const dataUri = input.match(/data:image\/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/=]+/)?.[0];
+    if (dataUri) return dataUri;
+
+    const imageUrl = input.match(/https?:\/\/[^\s"'<>]+\.(?:png|jpe?g|webp|gif)(?:\?[^\s"'<>]*)?/i)?.[0];
+    if (imageUrl) return imageUrl;
+
+    const anyUrl = input.match(/https?:\/\/[^\s"'<>]+/i)?.[0];
+    if (anyUrl) return anyUrl;
+
+    if (/^[A-Za-z0-9+/=\s]{1000,}$/.test(input)) {
+      return `data:image/png;base64,${input.replace(/\s/g, "")}`;
+    }
+
+    try {
+      return findImageInUnknown(JSON.parse(input), seen);
+    } catch {
+      return null;
+    }
+  }
+
+  if (typeof input !== "object") return null;
+  if (seen.has(input)) return null;
+  seen.add(input);
+
+  if (Array.isArray(input)) {
+    for (const item of input) {
+      const found = findImageInUnknown(item, seen);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  const object = input as Record<string, unknown>;
+  const preferredKeys = [
+    "url",
+    "image_url",
+    "imageUrl",
+    "image",
+    "images",
+    "b64_json",
+    "base64",
+    "data",
+    "content",
+    "attachments",
+    "files",
+    "output",
+    "result",
+  ];
+
+  for (const key of preferredKeys) {
+    const found = findImageInUnknown(object[key], seen);
+    if (found) return found;
+  }
+
+  for (const value of Object.values(object)) {
+    const found = findImageInUnknown(value, seen);
+    if (found) return found;
+  }
+
   return null;
 }
 
