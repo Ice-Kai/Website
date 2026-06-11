@@ -25,7 +25,7 @@ export function proxy(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
   const ua = req.headers.get("user-agent") || "";
 
-  if (botUA.test(ua)) {
+  if (botUA.test(ua) && pathname !== "/api/image-proxy") {
     return new NextResponse("Access Denied", { status: 403 });
   }
 

@@ -20,6 +20,7 @@ type GeneratedImage = {
   size: string;
   imageUrl: string;
   previewUrl: string;
+  proxyPreviewUrl?: string;
   downloadUrl: string;
   createdAt: string;
 };
@@ -122,6 +123,7 @@ export function AiImageWorkbench() {
         size,
         imageUrl: data.imageUrl,
         previewUrl: data.previewUrl || data.imageUrl,
+        proxyPreviewUrl: data.proxyPreviewUrl,
         downloadUrl: data.downloadUrl || data.imageUrl,
         createdAt: new Date().toISOString(),
       };
@@ -144,7 +146,7 @@ export function AiImageWorkbench() {
   function handlePreviewError() {
     if (!result) return;
 
-    const fallbacks = [result.imageUrl, result.downloadUrl].filter(Boolean);
+    const fallbacks = [result.proxyPreviewUrl, result.imageUrl, result.downloadUrl].filter(Boolean) as string[];
     const next = fallbacks[previewFallbackIndex];
 
     if (next && next !== previewSrc) {
