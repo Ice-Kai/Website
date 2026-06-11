@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle, X, Send, Phone, Mail, ExternalLink } from "lucide-react";
+import { MessageCircle, X, Send, Copy, Mail } from "lucide-react";
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -41,27 +41,26 @@ export function ChatWidget() {
 
           {/* 快捷入口 */}
           <div className="grid grid-cols-2 gap-3 p-5">
-            <a
-              href="https://qm.qq.com/q/example"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => navigator.clipboard.writeText("IceKAI7109258")}
               className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 text-center transition-all hover:border-cyan-200 hover:bg-cyan-50 hover:-translate-y-0.5"
             >
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-cyan-100 text-cyan-600">
-                <ExternalLink className="h-5 w-5" />
+                <Copy className="h-5 w-5" />
               </span>
-              <span className="text-xs font-bold text-slate-700">加入QQ群</span>
-              <span className="text-[10px] font-semibold text-slate-400">群号: 123456789</span>
-            </a>
+              <span className="text-xs font-bold text-slate-700">客服微信</span>
+              <span className="text-[10px] font-semibold text-slate-400">IceKAI7109258</span>
+            </button>
             <a
-              href="mailto:support@xuedda.com"
+              href="mailto:Belongstokk@protonmail.com"
               className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 text-center transition-all hover:border-blue-200 hover:bg-blue-50 hover:-translate-y-0.5"
             >
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-blue-100 text-blue-600">
                 <Mail className="h-5 w-5" />
               </span>
               <span className="text-xs font-bold text-slate-700">发送邮件</span>
-              <span className="text-[10px] font-semibold text-slate-400">工作日回复</span>
+              <span className="break-all text-[10px] font-semibold text-slate-400">Belongstokk@protonmail.com</span>
             </a>
           </div>
 
@@ -81,9 +80,9 @@ export function ChatWidget() {
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 客服在线
               </span>
-              <a href="tel:400-000-0000" className="inline-flex items-center gap-1 text-cyan-600 hover:underline">
-                <Phone className="h-3 w-3" />
-                400-000-0000
+              <a href="mailto:Belongstokk@protonmail.com" className="inline-flex items-center gap-1 text-cyan-600 hover:underline">
+                <Mail className="h-3 w-3" />
+                联系邮箱
               </a>
             </div>
           </div>
