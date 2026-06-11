@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 240;
 
 const requestSchema = z.object({
   prompt: z.string().trim().min(2, "请输入更完整的提示词").max(2000, "提示词过长"),
@@ -158,10 +158,16 @@ export async function POST(req: NextRequest) {
 
   const upstreamUrl = new URL(endpoint, baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`);
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 55_000);
+  const timeout = setTimeout(() => controller.abort(), 220_000);
 
   let upstream: Response;
   try {
+    console.info("generate-image upstream request", {
+      endpoint,
+      model: parsed.data.model || process.env.IMAGE_PROXY_MODEL || "gpt-image-2",
+      size: parsed.data.size ?? "1024x1024",
+    });
+
     upstream = await fetch(upstreamUrl, {
       method: "POST",
       headers: {
@@ -172,6 +178,11 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(buildUpstreamBody(parsed.data, endpoint)),
     });
   } catch (error) {
+    console.error("generate-image upstream connection failed", {
+      name: error instanceof Error ? error.name : "UnknownError",
+      message: error instanceof Error ? error.message : String(error),
+    });
+
     return NextResponse.json(
       { error: error instanceof DOMException && error.name === "AbortError" ? "生图服务响应超时" : "无法连接生图服务" },
       { status: 504 },
@@ -180,7 +191,23 @@ export async function POST(req: NextRequest) {
     clearTimeout(timeout);
   }
 
-  const data = await upstream.json().catch(() => null);
+  const responseText = await upstream.text().catch(() => "");
+  const data = responseText
+    ? (() => {
+        try {
+          return JSON.parse(responseText);
+        } catch {
+          return { message: responseText };
+        }
+      })()
+    : null;
+
+  console.info("generate-image upstream response", {
+    status: upstream.status,
+    ok: upstream.ok,
+    contentType: upstream.headers.get("content-type"),
+    responseLength: responseText.length,
+  });
 
   if (!upstream.ok) {
     return NextResponse.json(
