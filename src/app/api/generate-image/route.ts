@@ -10,7 +10,7 @@ const requestSchema = z.object({
   model: z.string().trim().max(100).optional(),
   quality: z.string().trim().max(32).optional(),
   style: z.string().trim().max(64).optional(),
-  sourceImage: z.string().startsWith("data:image/").max(6_000_000).optional(),
+  sourceImage: z.string().startsWith("data:image/").max(6_000_000).nullish(),
 });
 
 function getImageUrls(data: unknown): { imageUrl: string | null; downloadUrl: string | null } {

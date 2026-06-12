@@ -111,7 +111,7 @@ export function AiImageWorkbench() {
       const res = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, size, sourceImage }),
+        body: JSON.stringify({ prompt, size, ...(sourceImage ? { sourceImage } : {}) }),
       });
       const data = await res.json();
 
